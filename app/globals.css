@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.fc .fc-toolbar.fc-header-toolbar {
+  margin-left: 4px;
+  margin-right: 4px;
+  margin-bottom: 0.8em;
+}
+
+/* buttons */
+.fc .fc-button-primary,
+.fc .fc-button-primary:hover,
+.fc .fc-button-primary:disabled {
+  border-color: #d4d4d4;
+  border-radius: 0.5rem;
+  background-color: #fff;
+  color: #000;
+}
+
+.fc-toolbar-title {
+  /* font-weight: 500; */
+}
+
+.fc-day-grid {
+  overflow: hidden !important;
+  height: auto !important;
+}
+
+.fc-event-title {
+  /* color: #000; */
+}
+
+.fc-col-header-cell {
+  font-weight: normal;
+}
+
+.fc-event-title-container {
+  cursor: pointer;
+  line-height: 2rem;
+  font-size: 1.2rem;
+  /* font-weight: 500; */
+  font-size: 1.2rem;
+  text-wrap: wrap;
+  word-break: break-all;
+  line-height: 1.2rem;
+}
+
+.fc-unthemed td.fc-today {
+  /* background-color: transparent; */
+  background: transparent;
+}
+
+.fc-day-number {
+  /* font-size: 85%; */
+  padding: 0 2px 0 0 !important;
+}
+
+.fc-left > h2 {
+  font-size: 1.5rem;
+  color: black;
+}
+
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: transparent;
+}
+
+.fc-daygrid-day-number {
+  /* margin-top: 2px; */
+  margin-right: 2px;
+}
+
+.fc-day-today .fc-daygrid-day-number {
+  color: #fff;
+  width: 30px;
+  height: 30px;
+  margin-top: 2px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  background: #fc3d39;
+  border-radius: 100%;
+}
+
+.fc-event-selected {
+  border: 2px solid balck !important;
+}
+
+.fc-event {
+  /* width: 50%; */
+  border-radius: 4px;
+  text-align: center;
+  border: 2px solid transparent;
+  /* font-size: 1.2rem; */
+  /* line-height: 24px; */
+}
+
+.fc-event,
+.fc-event-dot {
+  color: #000;
+  border-color: transparent;
+}
+
+.btn {
+  @apply bg-blue-600 text-white font-semibold rounded py-2 px-4;
+}

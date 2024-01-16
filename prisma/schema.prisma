@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // provider = "postgresql"
+  // url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Roster {
+  id Int @id @default(autoincrement())
+  uid String
+  start String @db.VarChar(10)
+
+  shiftId Int
+  shift Shift @relation(fields: [shiftId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  
+  createdAt DateTime @default(now()) @db.Timestamp(6)
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Shift {
+  id Int @id @default(autoincrement())
+  uid String
+  title String @db.VarChar(64)
+  hours Float @default(8.0)
+  
+  roster Roster[]
+  
+  @@unique([uid, title])
+  
+}
+
+// model Profile {
+//   id Int @id @default(autoincrement())
+//   bio String?
+//   userId Int @unique
+//   User User @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+// }
+
+// model User {
+//   id Int @id @default(autoincrement())
+//   uid String @db.VarChar(255) // firebase auth user uid
+//   name String? @db.VarChar(255)
+//   email String @unique @db.VarChar(255)
+//   Profile Profile?
+//   Roster Roster[]
+// }
