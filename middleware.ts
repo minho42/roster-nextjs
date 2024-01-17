@@ -17,8 +17,8 @@ export function middleware(request: NextRequest) {
 
   verifyFirebaseJWT(tokenCookie?.value)
     .then((jwtData) => {
-      // console.log("verifyFirebaseJWT")
-      // console.log("user_id: ", jwtData?.user_id)
+      console.log("verifyFirebaseJWT")
+      console.log("user_id: ", jwtData?.user_id)
       if (!jwtData || !jwtData?.user_id) {
         return NextResponse.redirect(new URL("/login", request.url))
       }

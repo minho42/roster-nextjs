@@ -15,19 +15,19 @@ datasource db {
 model Roster {
   id Int @id @default(autoincrement())
   uid String
-  start String @db.VarChar(10)
+  start String
 
   shiftId Int
   shift Shift @relation(fields: [shiftId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   
-  createdAt DateTime @default(now()) @db.Timestamp(6)
+  createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Shift {
   id Int @id @default(autoincrement())
   uid String
-  title String @db.VarChar(64)
+  title String
   hours Float @default(8.0)
   
   roster Roster[]
@@ -45,9 +45,9 @@ model Shift {
 
 // model User {
 //   id Int @id @default(autoincrement())
-//   uid String @db.VarChar(255) // firebase auth user uid
-//   name String? @db.VarChar(255)
-//   email String @unique @db.VarChar(255)
+//   uid String
+//   name String?
+//   email String @unique
 //   Profile Profile?
 //   Roster Roster[]
 // }

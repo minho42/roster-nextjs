@@ -77,6 +77,9 @@ export default function Page() {
           uid: user?.uid,
         }),
       })
+      if (!res.ok) {
+        throw new Error("getShiftList fetch fail")
+      }
       const data = await res.json()
       setShiftList(data)
     }
