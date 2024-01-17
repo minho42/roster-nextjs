@@ -1,4 +1,4 @@
-import CalendarPage from "./calendar/calendar-page"
+import Calendar from "./calendar/CalendarList"
 
 export default function Home() {
   return <main className="flex w-full min-h-screen flex-col items-center p-2">home</main>

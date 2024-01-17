@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app"
+import { getFirestore } from "firebase/firestore"
 import { getAuth } from "firebase/auth"
 import { signInWithPopup, signOut, GoogleAuthProvider } from "firebase/auth"
 
@@ -13,7 +14,7 @@ const firebaseConfig = {
   appId: "1:54517641487:web:0ad8928b961f0208284e7a",
 }
 const app = initializeApp(firebaseConfig)
-
+export const db = getFirestore(app)
 export const auth = getAuth(app)
 
 export async function handleLogin() {

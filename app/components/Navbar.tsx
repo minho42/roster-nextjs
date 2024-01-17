@@ -12,57 +12,15 @@ export default function Navbar() {
   const pathname = usePathname()
   const { user, setUser, isLoading, setIsLoading } = useContext(UserContext)
 
-  async function requestSetCookieToken(user) {
-    try {
-      const idToken: string = await user.getIdToken()
-      if (!idToken) {
-        throw new Error("getIdToken error")
-      }
-      // console.log("JWT: ", idToken)
-      console.log("got JWT")
-      // Send token to your backend via HTTPS
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ token: idToken }),
-      })
-      const data = await res.json()
-      console.log(data)
-    } catch (error) {
-      console.error("getIdToken: Error getting JWT: ", error)
-    }
-  }
-
-  async function requestDeleteCookieToken() {
-    try {
-      const res = await fetch("/api/auth/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "applicatino/json",
-        },
-        credentials: "include",
-      })
-      const data = await res.json()
-      console.log(data)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setIsLoading(false)
       if (user) {
         console.log("changed: user login", user.uid)
         setUser(user)
-        requestSetCookieToken(user)
       } else {
         console.log("changed: user logout")
         setUser(null)
-        requestDeleteCookieToken()
       }
     })
   }, [])

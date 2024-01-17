@@ -1,5 +1,5 @@
-import CalendarPage from "./calendar-page"
+import CalendarList from "./CalendarList"
 
 export default async function Page() {
-  return <CalendarPage />
+  return <CalendarList />
 }
