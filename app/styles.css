@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 .fc .fc-toolbar.fc-header-toolbar {
-  margin-left: 4px;
-  margin-right: 4px;
+  margin-left: 8px;
+  margin-right: 8px;
   margin-bottom: 0.8em;
 }
 
@@ -19,7 +19,8 @@
 }
 
 .fc-toolbar-title {
-  /* font-weight: 500; */
+  font-size: 2.2rem !important;
+  font-weight: 500;
 }
 
 .fc-day-grid {
@@ -98,17 +99,17 @@
 }
 
 .btn {
-  @apply text-white text-center inline-block font-semibold rounded-md px-3 py-2;
+  @apply text-white text-center inline-block font-semibold rounded-md px-3 py-2 cursor-pointer;
 }
 
 .btn-blue {
-  @apply btn bg-blue-600;
+  @apply btn bg-blue-600 hover:bg-blue-700;
 }
 
 .btn-red {
-  @apply btn bg-red-600;
+  @apply btn bg-red-600 hover:bg-red-700;
 }
 
 .btn-disabled {
-  @apply btn !text-neutral-400 !bg-neutral-100 opacity-80 cursor-not-allowed;
+  @apply btn !text-neutral-400 !bg-neutral-100 opacity-90 cursor-not-allowed;
 }

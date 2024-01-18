@@ -93,7 +93,7 @@ export function ShiftList({ header, setSelectedForParent, size, refetchTogle }: 
               >
                 <div
                   style={{ backgroundColor: getColorForTitle(shift.title) }}
-                  className={`flex items-center justify-center rounded-md p-2 
+                  className={`flex items-center justify-center rounded-md p-2 cursor-pointer
                   ${
                     size === "large"
                       ? " min-w-20 min-h-20 text-2xl "
@@ -109,10 +109,10 @@ export function ShiftList({ header, setSelectedForParent, size, refetchTogle }: 
                 </div>
               </div>
             ))}
-          <div className="flex flex-wrap break-all text-xs font-mono text-neutral-400">
+          <div className="flex flex-wrap break-all text-xs font-mono text-neutral-500">
             {selected ? (
               <div>
-                {selected?.title} ({selected?.id})
+                <span className="font-bold">[{selected?.title}]</span> ({selected?.id})
                 <p
                   className="text-center text-blue-600 underline cursor-pointer"
                   onClick={() => {

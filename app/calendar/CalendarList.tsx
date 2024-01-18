@@ -1,6 +1,6 @@
 "use client"
 
-import FullCalendar from "@fullcalendar/react"
+import FullCalendar, { Calendar } from "@fullcalendar/react"
 import dayGridPlugin from "@fullcalendar/daygrid"
 import interactionPlugin from "@fullcalendar/interaction"
 import { useState, useEffect, useRef, useContext, useCallback } from "react"
@@ -29,10 +29,6 @@ function renderDayHeaderContent(args) {
   return myDayNames[args.date.getDay()]
 }
 
-function handleEventClick(info) {
-  console.log("eventClick", info.event.title)
-}
-
 export default function CalendarList() {
   const calendarRef = useRef()
   const { user, setUser } = useContext(UserContext)
@@ -43,14 +39,46 @@ export default function CalendarList() {
   const [events, setEvents] = useState([])
   const [refetchTogle, setRefchToggle] = useState(false)
 
+  function handleEventClick(info) {
+    console.log("eventClick", info.event.title)
+  }
+
   async function createRoster(uid, start, shiftId) {
     console.log("createRoster")
     // Create roster using relashipship of shift
-    const docRef = doc(collection(db, `roster/${uid}/shift/`))
-    await setDoc(docRef, {
-      start,
-      shift: doc(collection(db, `shifts/${uid}/shift`), shiftId),
+    // const docRef = doc(collection(db, `roster/${uid}/shift/`))
+    // await setDoc(docRef, {
+    //   start,
+    //   shift: doc(collection(db, `shifts/${uid}/shift`), shiftId),
+    // })
+
+    // const shiftDocRef = doc(db, `shifts/${uid}/shift`, shiftId)
+    // const shiftDocSnapshot = await getDoc(shiftDocRef)
+    // if (!shiftDocSnapshot.exists()) {
+    //   console.log("shiftDocSnapshot doesn't exist for: ", shiftId)
+    //   return
+    // }
+    // const shiftData = shiftDocSnapshot.data()
+    // const newTitle = shiftData?.title
+
+    // check for duplicate
+    const rosterColRef = collection(db, `roster/${uid}/shift/`)
+    const querySnapshot = await getDocs(rosterColRef)
+
+    // roster/${uid}/shift/${shiftId}: "shifts/7WBULUmR7ASDeQwJW9Z3nKAaHSu2/shift/YSqJsVHyl8hZFEFp4kro"
+    // checking for duplicate by checking above relationship path has shiftId (e.g. "YSqJsVHyl8hZFEFp4kro")
+    const duplicate = querySnapshot.docs.find((doc) => {
+      return doc.data().shift.id === shiftId && doc.data().start === start
     })
+    if (duplicate) {
+      console.log("Not created: duplicate title")
+    } else {
+      const docRef = doc(rosterColRef)
+      await setDoc(docRef, {
+        start,
+        shift: doc(collection(db, `shifts/${uid}/shift`), shiftId),
+      })
+    }
 
     // Create roster by copying shift data, not using relationship
     // const shiftDocRef = doc(db, `shifts/${uid}/shift`, shiftId)
@@ -147,6 +175,15 @@ export default function CalendarList() {
     <div className="flex flex-col justify-center items-center pb-10 gap-3">
       {isEditMode && <ShiftList header={false} setSelectedForParent={setSelectedShift} size={"small"} />}
 
+      <div className="flex w-full justify-end p-2">
+        <buttom
+          onClick={() => setIsEditMode(!isEditMode)}
+          className={`${isEditMode ? "btn-red" : "btn-blue"}`}
+        >
+          {isEditMode ? "Exit edit" : "Edit ❯"}
+        </buttom>
+      </div>
+
       <FullCalendar
         ref={calendarRef}
         plugins={[dayGridPlugin, interactionPlugin]}
@@ -165,18 +202,9 @@ export default function CalendarList() {
         buttonText={{
           today: "Today",
         }}
-        customButtons={{
-          editBtn: {
-            text: "Edit",
-            click: function () {
-              console.log("editBtn clicked")
-              setIsEditMode(!isEditMode)
-            },
-          },
-        }}
         headerToolbar={{
-          left: "editBtn",
-          center: "title",
+          left: "title",
+          center: "",
           right: "today,prev,next",
         }}
         events={events}
