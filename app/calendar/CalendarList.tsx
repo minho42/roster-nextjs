@@ -166,7 +166,7 @@ export default function CalendarList() {
       <div className="flex w-full justify-end p-2">
         <buttom
           onClick={() => setIsEditMode(!isEditMode)}
-          className={`${isEditMode ? "btn-red" : "btn-blue"}`}
+          className={`${isEditMode ? "btn-red" : "btn-black"}`}
         >
           {isEditMode ? "Exit edit" : "Edit ❯"}
         </buttom>

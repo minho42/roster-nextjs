@@ -27,7 +27,7 @@ export default function Navbar() {
 
   return (
     // <nav className="flex justify-evenly items-center w-full flex-wrap sm:max-w-2xl px-4 h-12 gap-3">
-    <nav className="flex items-center w-full flex-wrap sm:max-w-2xl px-4 h-16 gap-2 text-neutral-500">
+    <nav className="flex items-center w-full flex-wrap sm:max-w-2xl px-4 h-10 gap-2 text-neutral-500">
       <Link href="/" className={` ${pathname === "/" ? "text-black font-semibold " : ""}`}>
         Home
       </Link>

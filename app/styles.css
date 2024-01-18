@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji";
+  font-size: 18px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #000000;
+}
+
 .fc .fc-toolbar.fc-header-toolbar {
   margin-left: 8px;
   margin-right: 8px;
@@ -75,6 +84,7 @@
   justify-content: center;
   align-items: center;
   align-content: center;
+  font-weight: 500;
   background: #fc3d39;
   border-radius: 100%;
 }
@@ -99,11 +109,15 @@
 }
 
 .fc .fc-daygrid-body-natural .fc-daygrid-day-events {
-  margin-bottom: 0.5em;
+  margin-bottom: 0.3em;
 }
 
 .btn {
   @apply text-white text-center inline-block font-semibold rounded-md px-3 py-2 cursor-pointer;
+}
+
+.btn-black {
+  @apply btn bg-neutral-800 hover:bg-neutral-900;
 }
 
 .btn-blue {
