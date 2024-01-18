@@ -20,22 +20,20 @@ import {
   addDoc,
   updateDoc,
 } from "firebase/firestore"
-import ShiftList, { Shift } from "../components/ShiftList"
+import { ShiftList, Shift } from "../components/ShiftList"
 
 export default function Page() {
   const { user } = useContext(UserContext)
   const [shiftList, setShiftList] = useState([])
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null)
   const [refetchTogle, setRefchToggle] = useState(false)
-  const inputCreateRef = useRef()
-  const inputUpdateRef = useRef()
+  const inputCreateRef = useRef(null)
+  const inputUpdateRef = useRef(null)
 
   async function handleDelete(id) {
     console.log("handleDelete")
     const docRef = doc(db, `shifts/${user.uid}/shift/`, id)
     await deleteDoc(docRef)
-
-    // delete roster that contains deleted shifts
 
     setRefchToggle(!refetchTogle)
   }
@@ -94,7 +92,7 @@ export default function Page() {
     <div className="flex flex-col gap-3">
       <ShiftList
         header={true}
-        setSelectedShift={setSelectedShift}
+        setSelectedForParent={setSelectedShift}
         size={"medium"}
         refetchTogle={refetchTogle}
       />

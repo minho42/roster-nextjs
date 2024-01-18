@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, useEffect, useRef, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { UserContext } from "../UserContext"
 import { getColorForTitle } from "./../utils"
 import { db } from "@/app/firebase"
@@ -31,17 +31,16 @@ export type Shift = {
 
 type PropType = {
   header: boolean
-  setSelectedShift: React.Dispatch<React.SetStateAction<Shift | null>>
+  setSelectedForParent: React.Dispatch<React.SetStateAction<Shift | null>>
   size: "small" | "medium" | "large"
   refetchTogle: boolean
 }
 
-export default function ShiftList({ header, setSelectedShift, size, refetchTogle }: PropType) {
+export function ShiftList({ header, setSelectedForParent, size, refetchTogle }: PropType) {
   const { user } = useContext(UserContext)
 
   const [shiftList, setShiftList] = useState([])
   const [selected, setSelected] = useState(null)
-  const inputRef = useRef()
 
   async function getShiftList() {
     console.log("getShiftList")
@@ -61,6 +60,7 @@ export default function ShiftList({ header, setSelectedShift, size, refetchTogle
     }
   }
   useEffect(() => {
+    setSelected(null)
     getShiftList()
   }, [user, refetchTogle])
 
@@ -80,7 +80,7 @@ export default function ShiftList({ header, setSelectedShift, size, refetchTogle
               <div
                 onClick={() => {
                   setSelected(shift)
-                  setSelectedShift(shift)
+                  setSelectedForParent(shift)
                 }}
                 key={shift.id}
                 className={`flex space-y-1 group relative rounded-lg 
@@ -116,7 +116,7 @@ export default function ShiftList({ header, setSelectedShift, size, refetchTogle
                   className="text-center text-blue-600 underline cursor-pointer"
                   onClick={() => {
                     setSelected(null)
-                    setSelectedShift(null)
+                    setSelectedForParent(null)
                   }}
                 >
                   Unselect

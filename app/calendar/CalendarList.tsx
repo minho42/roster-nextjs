@@ -22,7 +22,7 @@ import {
   getDocs,
   addDoc,
 } from "firebase/firestore"
-import ShiftList, { Shift } from "../components/ShiftList"
+import { ShiftList, Shift } from "../components/ShiftList"
 
 function renderDayHeaderContent(args) {
   const myDayNames = ["Su", "M", "Tu", "W", "Th", "F", "Sa"]
@@ -130,7 +130,9 @@ export default function CalendarList() {
       })
     )
     console.log(temp)
-    setEvents(temp)
+    const excludeUndefinedEvents = temp.filter((event) => event.title)
+    console.log(excludeUndefinedEvents)
+    setEvents(excludeUndefinedEvents)
   }
 
   useEffect(() => {
@@ -143,7 +145,7 @@ export default function CalendarList() {
 
   return (
     <div className="flex flex-col justify-center items-center pb-10 gap-3">
-      {isEditMode && <ShiftList header={false} setSelectedShift={setSelectedShift} size={"small"} />}
+      {isEditMode && <ShiftList header={false} setSelectedForParent={setSelectedShift} size={"small"} />}
 
       <FullCalendar
         ref={calendarRef}
