@@ -13,9 +13,7 @@
     "@fullcalendar/daygrid": "^6.1.10",
     "@fullcalendar/interaction": "^6.1.10",
     "@fullcalendar/react": "^6.1.10",
-    "@heroicons/react": "^2.1.1",
     "firebase": "^10.7.1",
-    "jose": "^5.2.0",
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18"
