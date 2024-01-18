@@ -61,6 +61,7 @@ export function ShiftList({ header, setSelectedForParent, size, refetchTogle }: 
   }
   useEffect(() => {
     setSelected(null)
+    setSelectedForParent(null)
     getShiftList()
   }, [user, refetchTogle])
 

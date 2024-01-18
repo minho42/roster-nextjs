@@ -107,7 +107,7 @@ export default function Page() {
               id="create"
               name="create"
               maxLength={12}
-              placeholder="new shift"
+              placeholder=""
               className="w-32 border border-neutral-400 rounded py-2 px-3 ml-2"
             />
           </label>
@@ -125,7 +125,7 @@ export default function Page() {
               id="update"
               name="update"
               maxLength={12}
-              placeholder="edit shift"
+              placeholder=""
               className="w-32 border border-neutral-400 rounded py-2 px-3 ml-2"
             />
           </label>

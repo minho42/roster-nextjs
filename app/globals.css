@@ -103,17 +103,17 @@
 }
 
 .btn {
-  @apply text-white text-center inline-block font-semibold rounded py-2 px-4;
+  @apply text-white text-center inline-block font-semibold rounded-md px-3 py-2;
 }
 
 .btn-blue {
-  @apply bg-blue-600 btn;
+  @apply btn bg-blue-600;
 }
 
 .btn-red {
-  @apply bg-red-600 btn;
+  @apply btn bg-red-600;
 }
 
 .btn-disabled {
-  @apply !text-neutral-400 !bg-neutral-100 cursor-not-allowed btn;
+  @apply btn !text-neutral-400 !bg-neutral-100 cursor-not-allowed;
 }
