@@ -49,7 +49,7 @@ export default function Navbar() {
             href="/profile"
             className={` ${pathname.includes("/profile") ? "text-black font-semibold " : ""}`}
           >
-            Hi, {user.displayName}
+            Profile
           </Link>
           |
           <button onClick={handleLogout} className="">

@@ -98,6 +98,10 @@
   border-color: transparent;
 }
 
+.fc .fc-daygrid-body-natural .fc-daygrid-day-events {
+  margin-bottom: 0.5em;
+}
+
 .btn {
   @apply text-white text-center inline-block font-semibold rounded-md px-3 py-2 cursor-pointer;
 }

@@ -34,8 +34,7 @@ export default function CalendarList() {
   const { user, setUser } = useContext(UserContext)
   const [titles, setTitles] = useState({})
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null)
-  const [isEditMode, setIsEditMode] = useState(true)
-  const [isFollowingCursor, setIsFollowingCursor] = useState(true)
+  const [isEditMode, setIsEditMode] = useState(false)
   const [events, setEvents] = useState([])
   const [refetchTogle, setRefchToggle] = useState(false)
 
