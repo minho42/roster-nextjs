@@ -112,7 +112,7 @@ export function ShiftList({ header, setSelectedForParent, size, refetchTogle }: 
           <div className="flex flex-wrap break-all text-xs font-mono text-neutral-400">
             {selected ? (
               <div>
-                {JSON.stringify(selected)}
+                {selected?.title} ({selected?.id})
                 <p
                   className="text-center text-blue-600 underline cursor-pointer"
                   onClick={() => {

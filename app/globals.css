@@ -27,23 +27,18 @@
   height: auto !important;
 }
 
-.fc-event-title {
-  /* color: #000; */
-}
-
 .fc-col-header-cell {
   font-weight: normal;
 }
 
+/* .fc-event-title-container { */
 .fc-event-title-container {
   cursor: pointer;
   line-height: 2rem;
   font-size: 1.2rem;
   /* font-weight: 500; */
-  font-size: 1.2rem;
   text-wrap: wrap;
   word-break: break-all;
-  line-height: 1.2rem;
 }
 
 .fc-unthemed td.fc-today {
@@ -115,5 +110,5 @@
 }
 
 .btn-disabled {
-  @apply btn !text-neutral-400 !bg-neutral-100 cursor-not-allowed;
+  @apply btn !text-neutral-400 !bg-neutral-100 opacity-80 cursor-not-allowed;
 }
