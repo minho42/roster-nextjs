@@ -46,7 +46,7 @@ type UserProviderProps = {
 export const UserContext = createContext<UserProviderProps | null>(null)
 
 export function UserProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState<FirebaseUser | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   return (
