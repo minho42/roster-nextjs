@@ -18,26 +18,59 @@ import {
   limit,
   getDocs,
   addDoc,
+  updateDoc,
 } from "firebase/firestore"
+import ShiftList, { Shift } from "../components/ShiftList"
 
 export default function Page() {
   const { user } = useContext(UserContext)
-
   const [shiftList, setShiftList] = useState([])
+  const [selectedShift, setSelectedShift] = useState<Shift | null>(null)
   const [refetchTogle, setRefchToggle] = useState(false)
-  const inputRef = useRef()
+  const inputCreateRef = useRef()
+  const inputUpdateRef = useRef()
 
-  async function deleteShift(id) {
-    console.log("deleteShift")
+  async function handleDelete(id) {
+    console.log("handleDelete")
     const docRef = doc(db, `shifts/${user.uid}/shift/`, id)
     await deleteDoc(docRef)
+
+    // delete roster that contains deleted shifts
+
     setRefchToggle(!refetchTogle)
   }
 
-  async function createShift(e) {
+  async function handleUpdate(e) {
     e.preventDefault()
-    console.log("createShift")
-    const newTitle = inputRef.current.value.trim()
+    if (!selectedShift) {
+      return
+    }
+    console.log("handleUpdate")
+    const newTitle = inputUpdateRef.current.value.trim()
+    if (!newTitle) {
+      return
+    }
+
+    const docRef = doc(db, `shifts/${user.uid}/shift`, selectedShift.id)
+    // await setDoc(docRef, {
+    //   // uid: user.uid,
+    //   title: newTitle,
+    //   modifiedAt: serverTimestamp(),
+    // })
+    await updateDoc(docRef, {
+      title: newTitle,
+      modifiedAt: serverTimestamp(),
+    })
+
+    inputUpdateRef.current.value = ""
+    inputUpdateRef.current.focus()
+    setRefchToggle(!refetchTogle)
+  }
+
+  async function handleCreate(e) {
+    e.preventDefault()
+    console.log("handleCreate")
+    const newTitle = inputCreateRef.current.value.trim()
     if (!newTitle) {
       return
     }
@@ -50,82 +83,65 @@ export default function Page() {
       modifiedAt: serverTimestamp(),
     })
 
-    inputRef.current.value = ""
-    inputRef.current.focus()
+    inputCreateRef.current.value = ""
+    inputCreateRef.current.focus()
     setRefchToggle(!refetchTogle)
   }
-
-  async function getShiftList() {
-    console.log("getShiftList")
-    if (!user) {
-      return setShiftList([])
-    }
-    const colRef = collection(db, `shifts/${user.uid}/shift`)
-    const q = query(colRef, orderBy("createdAt", "asc"))
-    try {
-      const snapshot = await getDocs(q)
-      const temp = snapshot.docs.map((doc) => {
-        return { ...doc.data(), id: doc.id }
-      })
-      setShiftList(temp)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-  useEffect(() => {
-    getShiftList()
-  }, [user, refetchTogle])
 
   if (!user) return <div>...</div>
 
   return (
-    <div className="flex flex-col sm:max-w-lg">
-      <h1 className="text-center text-2xl pb-3">Shift list ({shiftList?.length || 0})</h1>
-      <div className="flex flex-col gap-6">
-        <div
-          className="flex items-center justify-center gap-3 flex-wrap p-4 
-          border border-neutral-300 rounded-lg"
-        >
-          {shiftList &&
-            shiftList.length > 0 &&
-            shiftList.map((shift) => (
-              <div key={shift.id} className="flex space-y-1 group relative">
-                <div
-                  style={{ backgroundColor: getColorForTitle(shift.title) }}
-                  className="flex items-center justify-center min-w-20 min-h-20 rounded-md p-2"
-                >
-                  {shift.title}
-                </div>
-                <div
-                  onClick={() => deleteShift(shift.id)}
-                  className="absolute -top-2 -right-2 hidden group-hover:flex items-center justify-center bg-red-500 text-white rounded text-center text-sm cursor-pointer py-0.5 px-1"
-                >
-                  Delete
-                </div>
-              </div>
-            ))}
+    <div className="flex flex-col gap-3">
+      <ShiftList
+        header={true}
+        setSelectedShift={setSelectedShift}
+        size={"medium"}
+        refetchTogle={refetchTogle}
+      />
+
+      <form onSubmit={handleCreate}>
+        <div className="flex items-start justify-center gap-2">
+          <label htmlFor="create" className="font-semibold mb-2">
+            Add
+            <input
+              ref={inputCreateRef}
+              type="text"
+              id="create"
+              name="create"
+              maxLength={12}
+              placeholder="new shift"
+              className="w-32 border border-neutral-400 rounded py-2 px-3 ml-2"
+            />
+          </label>
+          <button className="btn-blue">Add</button>
         </div>
+      </form>
 
-        <form onSubmit={createShift}>
-          <div className="flex items-start justify-center gap-2">
-            <label htmlFor="title" className="font-semibold mb-2">
-              Name
-              <input
-                ref={inputRef}
-                type="text"
-                id="title"
-                name="title"
-                maxLength={12}
-                placeholder="new shift"
-                className="w-32 border border-neutral-400 rounded py-2 px-3 ml-2"
-              />
-            </label>
-            <button className="btn">Add</button>
-          </div>
-        </form>
+      <form onSubmit={handleUpdate}>
+        <div className="flex items-start justify-center gap-2">
+          <label htmlFor="update" className="font-semibold mb-2">
+            {selectedShift ? `Change \"${selectedShift.title}\" to ` : "Update"}
+            <input
+              ref={inputUpdateRef}
+              type="text"
+              id="update"
+              name="update"
+              maxLength={12}
+              placeholder="edit shift"
+              className="w-32 border border-neutral-400 rounded py-2 px-3 ml-2"
+            />
+          </label>
+          <button className={`${!selectedShift ? "btn-disabled" : "btn-blue"}`}>Update</button>
+        </div>
+      </form>
 
-        <div className="text-neutral-400">once selected: show edit/delete selected</div>
-      </div>
+      <button
+        onClick={() => handleDelete(selectedShift.id)}
+        className={`${!selectedShift ? "btn-disabled" : "btn-red"}`}
+        disabled={selectedShift === null}
+      >
+        Delete
+      </button>
     </div>
   )
 }

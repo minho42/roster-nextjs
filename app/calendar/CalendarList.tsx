@@ -22,113 +22,63 @@ import {
   getDocs,
   addDoc,
 } from "firebase/firestore"
+import ShiftList, { Shift } from "../components/ShiftList"
 
 function renderDayHeaderContent(args) {
   const myDayNames = ["Su", "M", "Tu", "W", "Th", "F", "Sa"]
   return myDayNames[args.date.getDay()]
 }
+
 function handleEventClick(info) {
   console.log("eventClick", info.event.title)
 }
 
 export default function CalendarList() {
-  function ShiftSelectList() {
-    const [shiftList, setShiftList] = useState([])
-    const inputRef = useRef()
-
-    const getShiftList = async () => {
-      console.log("getShiftList")
-      if (!user) {
-        return setShiftList([])
-      }
-      const colRef = collection(db, `shifts/${user.uid}/shift`)
-      const q = query(colRef, orderBy("createdAt", "asc"))
-      try {
-        const snapshot = await getDocs(q)
-        const temp = snapshot.docs.map((doc) => {
-          return { ...doc.data(), id: doc.id }
-        })
-        setShiftList(temp)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    useEffect(() => {
-      getShiftList()
-    }, [])
-
-    return (
-      <div className="flex flex-col sm:max-w-lg w-full bg-purple-100 p-3">
-        <h1 className="text-center">
-          {!selectedShift ? "Select shift " : `Select date on calendar for \"${selectedShift?.title}\"`}
-        </h1>
-        <div className="flex flex-col gap-6">
-          <div
-            className="flex items-center justify-center gap-3 flex-wrap p-4 
-            border border-neutral-300 rounded-lg bg-white"
-          >
-            {shiftList &&
-              shiftList.length > 0 &&
-              shiftList.map((shift) => (
-                <div
-                  onClick={() => {
-                    setSelectedShift(shift)
-                  }}
-                  key={shift.id}
-                  className={`flex space-y-1 group relative rounded-lg 
-                 ${
-                   shift.id === selectedShift?.id
-                     ? "border-2 border-black shadow-lg text-xl"
-                     : "border-2 border-white"
-                 }`}
-                >
-                  <div
-                    style={{ backgroundColor: getColorForTitle(shift.title) }}
-                    className="flex items-center justify-center min-w-12 min-h-12 rounded-md p-2"
-                  >
-                    {shift.title}
-                  </div>
-                </div>
-              ))}
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   const calendarRef = useRef()
   const { user, setUser } = useContext(UserContext)
   const [titles, setTitles] = useState({})
-  const [selectedShift, setSelectedShift] = useState(null)
-  const [isEditMode, setIsEditMode] = useState(false)
-
+  const [selectedShift, setSelectedShift] = useState<Shift | null>(null)
+  const [isEditMode, setIsEditMode] = useState(true)
+  const [isFollowingCursor, setIsFollowingCursor] = useState(true)
   const [events, setEvents] = useState([])
   const [refetchTogle, setRefchToggle] = useState(false)
 
   async function createRoster(uid, start, shiftId) {
     console.log("createRoster")
+    // Create roster using relashipship of shift
     const docRef = doc(collection(db, `roster/${uid}/shift/`))
     await setDoc(docRef, {
       start,
       shift: doc(collection(db, `shifts/${uid}/shift`), shiftId),
     })
+
+    // Create roster by copying shift data, not using relationship
+    // const shiftDocRef = doc(db, `shifts/${uid}/shift`, shiftId)
+    // const shiftDocSnapshot = await getDoc(shiftDocRef)
+    // if (shiftDocSnapshot.exists()) {
+    //   const shiftData = shiftDocSnapshot.data()
+    //   const rosterDocRef = doc(collection(db, `roster/${uid}/shift/`))
+    //   await setDoc(rosterDocRef, {
+    //     start,
+    //     title: shiftData?.title,
+    //   })
+    // }
   }
 
   async function handleDateClick(info) {
     console.log("handleDateClick")
     console.log("dateClick", info.dateStr)
-    if (!user) return
+    if (!user || !selectedShift) return
 
     // optimistically create first
     const calApi = calendarRef.current.getApi()
     calApi.addEvent({
       id: user.uid,
+      // title: selectedShift ? selectedShift?.title : "...",
       title: "...",
-      // start: new Date(info.dateStr).toISOString(),
       start: info.dateStr,
-      backgroundColor: "#fff",
-      borderColor: "#fff",
+      backgroundColor: selectedShift ? getColorForTitle(selectedShift?.title) : "#fff",
+      // borderColor: "#fff",
       textColor: "#000",
     })
 
@@ -149,7 +99,7 @@ export default function CalendarList() {
     if (docSnap.exists) {
       // console.log(docSnap.data())
       // setTitles((prevTitles) => ({ ...prevTitles, [shiftId]: title }))
-      const title = docSnap.data().title
+      const title = docSnap.data()?.title
       return title
     } else {
       console.log("No shift for id: " + shiftId)
@@ -169,7 +119,7 @@ export default function CalendarList() {
       snapshot.docs.map(async (doc) => {
         const shiftId = doc.data().shift.id
         const title = await getShiftTitle(shiftId)
-
+        // const title = doc.data().title
         const start = doc.data().start
         const color = getColorForTitle(title)
         return {
@@ -193,7 +143,7 @@ export default function CalendarList() {
 
   return (
     <div className="flex flex-col justify-center items-center pb-10 gap-3">
-      {isEditMode && <ShiftSelectList />}
+      {isEditMode && <ShiftList header={false} setSelectedShift={setSelectedShift} size={"small"} />}
 
       <FullCalendar
         ref={calendarRef}
