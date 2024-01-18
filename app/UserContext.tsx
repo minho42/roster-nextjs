@@ -1,8 +1,51 @@
-import { createContext, useState } from "react"
+import React, { createContext, useState, ReactNode } from "react"
 
-export const UserContext = createContext(null)
+type FirebaseUser = {
+  uid: string
+  email: string
+  emailVerified: boolean
+  displayName: string
+  isAnonymous: boolean
+  photoURL: string | null
+  providerData: ProviderData[]
+  stsTokenManager: StsTokenManager
+  metadata: UserMetadata
+  createdAt: string
+  lastLoginAt: string
+  apiKey: string
+  appName: string
+}
 
-export function UserProvider({ children }) {
+type ProviderData = {
+  providerId: string
+  uid: string
+  displayName: string
+  email: string
+  phoneNumber: string | null
+  photoURL: string | null
+}
+
+type StsTokenManager = {
+  refreshToken: string
+  accessToken: string
+  expirationTime: number
+}
+
+type UserMetadata = {
+  createdAt: string
+  lastLoginAt: string
+}
+
+type UserProviderProps = {
+  user: FirebaseUser | null
+  setUser: React.Dispatch<React.SetStateAction<FirebaseUser | null>>
+  isLoading: boolean
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export const UserContext = createContext<UserProviderProps | null>(null)
+
+export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
 
