@@ -52,21 +52,10 @@ export default function CalendarList() {
     //   shift: doc(collection(db, `shifts/${uid}/shift`), shiftId),
     // })
 
-    // const shiftDocRef = doc(db, `shifts/${uid}/shift`, shiftId)
-    // const shiftDocSnapshot = await getDoc(shiftDocRef)
-    // if (!shiftDocSnapshot.exists()) {
-    //   console.log("shiftDocSnapshot doesn't exist for: ", shiftId)
-    //   return
-    // }
-    // const shiftData = shiftDocSnapshot.data()
-    // const newTitle = shiftData?.title
-
     // check for duplicate
     const rosterColRef = collection(db, `roster/${uid}/shift/`)
     const querySnapshot = await getDocs(rosterColRef)
 
-    // roster/${uid}/shift/${shiftId}: "shifts/7WBULUmR7ASDeQwJW9Z3nKAaHSu2/shift/YSqJsVHyl8hZFEFp4kro"
-    // checking for duplicate by checking above relationship path has shiftId (e.g. "YSqJsVHyl8hZFEFp4kro")
     const duplicate = querySnapshot.docs.find((doc) => {
       return doc.data().shift.id === shiftId && doc.data().start === start
     })
