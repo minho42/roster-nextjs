@@ -32,11 +32,8 @@ export default function Navbar() {
         Home
       </Link>
       |
-      <Link
-        href="/calendar"
-        className={` ${pathname.includes("/calendar") ? "text-black font-semibold " : ""}`}
-      >
-        Calendar
+      <Link href="/roster" className={` ${pathname.includes("/roster") ? "text-black font-semibold " : ""}`}>
+        Roster
       </Link>
       |
       <Link href="/shift" className={` ${pathname.includes("/shift") ? "text-black font-semibold " : ""}`}>

@@ -30,18 +30,16 @@ function renderDayHeaderContent(args) {
   return myDayNames[args.date.getDay()]
 }
 
-export default function CalendarList() {
+export default function RosterList() {
   const calendarRef = useRef()
+  const popupRef = useRef()
   const { user, setUser } = useContext(UserContext)
   const [titles, setTitles] = useState({})
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null)
   const [isEditMode, setIsEditMode] = useState(false)
   const [events, setEvents] = useState([])
   const [refetchTogle, setRefchToggle] = useState(false)
-
-  function handleEventClick(info) {
-    console.log("eventClick", info.event.title)
-  }
+  const [isPopupVisible, setIsPopupVisible] = useState(false)
 
   async function createRoster(uid, start, shiftId) {
     console.log("createRoster")
@@ -152,6 +150,16 @@ export default function CalendarList() {
     setEvents(excludeUndefinedEvents)
   }
 
+  function keyboardShortcuts(e) {
+    console.log(isPopupVisible)
+    if (!isPopupVisible) return
+
+    // esc to close popup
+    if (e.keyCode === 27) {
+      setIsPopupVisible(false)
+    }
+  }
+
   useEffect(() => {
     getRosterList()
 
@@ -160,8 +168,20 @@ export default function CalendarList() {
     calApi.render()
   }, [user, refetchTogle])
 
+  useEffect(() => {
+    document.addEventListener("keydown", keyboardShortcuts)
+    return () => {
+      document.removeEventListener("keydown", keyboardShortcuts)
+    }
+  }, [])
+
+  function handleEventClick(info) {
+    setIsPopupVisible(true)
+    console.log("eventClick", info.event.title)
+  }
+
   return (
-    <div className="flex flex-col justify-center items-center pb-10 gap-3">
+    <div className="relative flex flex-col justify-center items-center pb-10 gap-3">
       {isEditMode && <ShiftList header={false} setSelectedForParent={setSelectedShift} size={"small"} />}
 
       <div>
@@ -175,6 +195,46 @@ export default function CalendarList() {
             {isEditMode ? <XMarkIcon className="w-10 h-10" /> : <PlusIcon className="w-10 h-10" />}
           </div>
         </button>
+      </div>
+
+      <div
+        id="overlay"
+        onClick={() => setIsPopupVisible(false)}
+        className={`absolute inset-0  min-h-screen w-screen bg-black opacity-10 z-40
+        ${isPopupVisible ? "inline-block" : "hidden"}
+        `}
+      >
+        x
+      </div>
+      <div ref={popupRef} className={`relative z-50 ${isPopupVisible ? "inline-block" : "hidden"}`}>
+        <div
+          className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          role="menu"
+          aria-orientation="vertical"
+          aria-labelledby="menu-button"
+          tabIndex={-1}
+        >
+          <div className="py-1" role="none">
+            {/* Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" */}
+            <a
+              href="#"
+              className="block px-4 py-2 text-sm hover:bg-neutral-100"
+              role="menuitem"
+              tabIndex={-1}
+              id="menu-item-0"
+            >
+              Nothing...
+            </a>
+            <a
+              href="#"
+              className="block px-4 py-2 text-sm hover:bg-neutral-100"
+              tabIndex={-1}
+              id="menu-item-1"
+            >
+              Delete
+            </a>
+          </div>
+        </div>
       </div>
 
       <FullCalendar
