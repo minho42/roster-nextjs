@@ -23,6 +23,7 @@ import {
   addDoc,
 } from "firebase/firestore"
 import { ShiftList, Shift } from "../components/ShiftList"
+import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline"
 
 function renderDayHeaderContent(args) {
   const myDayNames = ["Su", "M", "Tu", "W", "Th", "F", "Sa"]
@@ -170,7 +171,9 @@ export default function CalendarList() {
             isEditMode ? "btn-red" : "btn-blue"
           }`}
         >
-          <div className="flex items-center justify-center w-full h-full">{isEditMode ? "X" : "+"}</div>
+          <div className="flex items-center justify-center w-full h-full">
+            {isEditMode ? <XMarkIcon className="w-10 h-10" /> : <PlusIcon className="w-10 h-10" />}
+          </div>
         </button>
       </div>
 

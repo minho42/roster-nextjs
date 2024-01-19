@@ -49,7 +49,7 @@ export default function Navbar() {
             href="/profile"
             className={` ${pathname.includes("/profile") ? "text-black font-semibold " : ""}`}
           >
-            <img src={user.photoURL} alt="avatar" className="w-8 h-8 rounded-full" />
+            <img src={user.photoURL} alt="avatar" className="w-8 h-8 rounded-md" />
           </Link>
         </>
       )}
