@@ -143,9 +143,7 @@ export default function Page() {
       </form>
 
       <div className="text-center space-y-1 py-6">
-        {selectedShift && (
-          <p className="text-sm text-red-400">This will delete shifts from the Calendar too</p>
-        )}
+        {selectedShift && <p className="text-sm text-red-400">This will delete shifts from the Roster too</p>}
         <button
           onClick={() => handleDelete(selectedShift.id)}
           className={`${!selectedShift ? "btn-disabled" : "btn-red"}`}
