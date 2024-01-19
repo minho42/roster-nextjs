@@ -40,6 +40,7 @@ export default function RosterList() {
   const [events, setEvents] = useState([])
   const [refetchTogle, setRefchToggle] = useState(false)
   const [isPopupVisible, setIsPopupVisible] = useState(false)
+  const [selectedEvent, setSelectedEvent] = useState(null)
 
   async function createRoster(uid, start, shiftId) {
     console.log("createRoster")
@@ -89,11 +90,9 @@ export default function RosterList() {
     const calApi = calendarRef.current.getApi()
     calApi.addEvent({
       id: user.uid,
-      // title: selectedShift ? selectedShift?.title : "...",
       title: "...",
       start: info.dateStr,
       backgroundColor: selectedShift ? getColorForTitle(selectedShift?.title) : "#fff",
-      // borderColor: "#fff",
       textColor: "#000",
     })
 
@@ -144,20 +143,24 @@ export default function RosterList() {
         }
       })
     )
-    console.log(temp)
+    // console.log(temp)
     const excludeUndefinedEvents = temp.filter((event) => event.title)
     console.log(excludeUndefinedEvents)
     setEvents(excludeUndefinedEvents)
   }
 
   function keyboardShortcuts(e) {
-    console.log(isPopupVisible)
     if (!isPopupVisible) return
 
     // esc to close popup
     if (e.keyCode === 27) {
-      setIsPopupVisible(false)
+      handlePopupClose()
     }
+  }
+
+  function handlePopupClose() {
+    setIsPopupVisible(false)
+    setSelectedEvent(null)
   }
 
   useEffect(() => {
@@ -173,15 +176,31 @@ export default function RosterList() {
     return () => {
       document.removeEventListener("keydown", keyboardShortcuts)
     }
-  }, [])
+  }, [isPopupVisible])
 
   function handleEventClick(info) {
+    console.log(info.event.start)
+    const startStr = info.event.start.toLocaleDateString("en-CA", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
     setIsPopupVisible(true)
     console.log("eventClick", info.event.title)
+    setSelectedEvent(info)
+    popupRef.current.querySelector(
+      "#deleteOption"
+    ).textContent = `Delete: [${info.event.title}] (${startStr})`
+  }
+
+  function handleDelete() {
+    console.log("handleDelete")
+
+    setIsPopupVisible(false)
   }
 
   return (
-    <div className="relative flex flex-col justify-center items-center pb-10 gap-3">
+    <div className="flex flex-col justify-center items-center pb-10 gap-3">
       {isEditMode && <ShiftList header={false} setSelectedForParent={setSelectedShift} size={"small"} />}
 
       <div>
@@ -199,37 +218,41 @@ export default function RosterList() {
 
       <div
         id="overlay"
-        onClick={() => setIsPopupVisible(false)}
-        className={`absolute inset-0  min-h-screen w-screen bg-black opacity-10 z-40
+        onClick={handlePopupClose}
+        className={`absolute inset-0  min-h-screen w-screen bg-black opacity-0 z-40
         ${isPopupVisible ? "inline-block" : "hidden"}
         `}
+      ></div>
+      <div
+        ref={popupRef}
+        className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-2 border-black rounded-md z-50 ${
+          isPopupVisible ? "inline-block" : "hidden"
+        }`}
       >
-        x
-      </div>
-      <div ref={popupRef} className={`relative z-50 ${isPopupVisible ? "inline-block" : "hidden"}`}>
         <div
-          className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          className="
+           z-10 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="menu-button"
           tabIndex={-1}
         >
-          <div className="py-1" role="none">
+          <div className="py-1 text-center" role="none">
             {/* Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" */}
             <a
               href="#"
-              className="block px-4 py-2 text-sm hover:bg-neutral-100"
+              className="block px-4 py-2 text-sm hover:bg-neutral-200"
               role="menuitem"
               tabIndex={-1}
-              id="menu-item-0"
             >
               Nothing...
             </a>
             <a
+              id="deleteOption"
+              onClick={handleDelete}
               href="#"
-              className="block px-4 py-2 text-sm hover:bg-neutral-100"
+              className="block px-4 py-2 text-sm hover:bg-neutral-200"
               tabIndex={-1}
-              id="menu-item-1"
             >
               Delete
             </a>
