@@ -140,3 +140,7 @@ body {
 .btn-disabled {
   @apply btn !text-neutral-400 !bg-neutral-100 opacity-90 cursor-not-allowed;
 }
+
+button:disabled {
+  @apply btn !text-neutral-400 !bg-neutral-100 opacity-90 cursor-not-allowed;
+}

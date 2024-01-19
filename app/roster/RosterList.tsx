@@ -41,6 +41,7 @@ export default function RosterList() {
   const [refetchTogle, setRefchToggle] = useState(false)
   const [isPopupVisible, setIsPopupVisible] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState(null)
+  const [countDown, setCountDown] = useState(3)
 
   async function createRoster(uid, start, shiftId) {
     console.log("createRoster")
@@ -174,10 +175,36 @@ export default function RosterList() {
 
   useEffect(() => {
     document.addEventListener("keydown", keyboardShortcuts)
+
+    let countDownInterval
+
+    if (isPopupVisible) {
+      countDownInterval = setInterval(function () {
+        setCountDown((countDown) => countDown - 1)
+      }, 1000)
+    } else {
+      setCountDown(3)
+      clearInterval(countDownInterval)
+    }
+
     return () => {
       document.removeEventListener("keydown", keyboardShortcuts)
+      clearInterval(countDownInterval)
     }
   }, [isPopupVisible])
+
+  useEffect(() => {
+    if (popupRef?.current) {
+      const deleteBtn = popupRef.current.querySelector("#deleteButton")
+      deleteBtn.textContent = countDown > 0 ? `Delete (${countDown})` : "Delete"
+
+      if (countDown > 0) {
+        deleteBtn.disabled = true
+      } else {
+        deleteBtn.disabled = false
+      }
+    }
+  }, [countDown])
 
   useEffect(() => {
     if (!isEditMode) {
@@ -266,7 +293,7 @@ export default function RosterList() {
         >
           <div className="text-center space-y-2 py-3">
             <div id="deleteOptionHeading" className="font-semibold border-b-1 border-neural-300"></div>
-            <button onClick={handleDelete} className="btn-red" tabIndex={-1}>
+            <button id="deleteButton" onClick={handleDelete} className="btn-red" tabIndex={-1}>
               Delete
             </button>
           </div>
