@@ -140,6 +140,7 @@ export default function RosterList() {
           start,
           title,
           color,
+          id: doc.id, // "id" to be used for fullcalendar event
         }
       })
     )
@@ -178,6 +179,29 @@ export default function RosterList() {
     }
   }, [isPopupVisible])
 
+  useEffect(() => {
+    if (!isEditMode) {
+      setSelectedShift(null)
+    }
+  }, [isEditMode])
+
+  useEffect(() => {
+    if (!calendarRef?.current) return
+
+    const calApi = calendarRef.current.getApi()
+    const table = calApi.el.querySelector("table")
+
+    if (selectedShift) {
+      table.style.borderColor = getColorForTitle(selectedShift.title)
+      table.style.borderWidth = "4px"
+      table.style.borderStyle = "solid"
+    } else {
+      table.style.borderColor = "#d4d4d4"
+      table.style.borderWidth = "1px"
+      table.style.borderStyle = "solid"
+    }
+  }, [selectedShift])
+
   function handleEventClick(info) {
     console.log(info.event.start)
     const startStr = info.event.start.toLocaleDateString("en-CA", {
@@ -187,14 +211,20 @@ export default function RosterList() {
     })
     setIsPopupVisible(true)
     console.log("eventClick", info.event.title)
-    setSelectedEvent(info)
+    setSelectedEvent(info.event)
     popupRef.current.querySelector(
-      "#deleteOption"
-    ).textContent = `Delete: [${info.event.title}] (${startStr})`
+      "#deleteOptionHeading"
+    ).textContent = `Delete: ${info.event.title} (${startStr})`
   }
 
-  function handleDelete() {
+  async function handleDelete() {
     console.log("handleDelete")
+    if (!selectedEvent) return
+
+    console.log(`roster/${user.uid}/shift/${selectedEvent.id}`)
+    const docRef = doc(db, `roster/${user.uid}/shift/${selectedEvent.id}`)
+    await deleteDoc(docRef)
+    setRefchToggle(!refetchTogle)
 
     setIsPopupVisible(false)
   }
@@ -231,31 +261,14 @@ export default function RosterList() {
       >
         <div
           className="
-           z-10 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-          role="menu"
-          aria-orientation="vertical"
-          aria-labelledby="menu-button"
+           z-10 w-56  rounded-md bg-white shadow-lg "
           tabIndex={-1}
         >
-          <div className="py-1 text-center" role="none">
-            {/* Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" */}
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm hover:bg-neutral-200"
-              role="menuitem"
-              tabIndex={-1}
-            >
-              Nothing...
-            </a>
-            <a
-              id="deleteOption"
-              onClick={handleDelete}
-              href="#"
-              className="block px-4 py-2 text-sm hover:bg-neutral-200"
-              tabIndex={-1}
-            >
+          <div className="text-center space-y-2 py-3">
+            <div id="deleteOptionHeading" className="font-semibold border-b-1 border-neural-300"></div>
+            <button onClick={handleDelete} className="btn-red" tabIndex={-1}>
               Delete
-            </a>
+            </button>
           </div>
         </div>
       </div>

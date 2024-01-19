@@ -11,6 +11,11 @@ body {
   color: #000000;
 }
 
+/* .fc-daygrid-day-frame:hover {
+  background-color: lightblue;
+  cursor: pointer;
+} */
+
 .fc .fc-toolbar.fc-header-toolbar {
   margin-left: 8px;
   margin-right: 8px;

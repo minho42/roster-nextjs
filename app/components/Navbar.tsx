@@ -7,6 +7,7 @@ import { onAuthStateChanged } from "firebase/auth"
 
 import { useEffect, useContext } from "react"
 import { UserContext } from "../UserContext"
+import { UserCircleIcon } from "@heroicons/react/24/outline"
 
 export default function Navbar() {
   const pathname = usePathname()
@@ -46,7 +47,8 @@ export default function Navbar() {
             href="/profile"
             className={` ${pathname.includes("/profile") ? "text-black font-semibold " : ""}`}
           >
-            <img src={user.photoURL} alt="avatar" className="w-8 h-8 rounded-md" />
+            {/* <img src={user.photoURL} alt="avatar" className="w-8 h-8 rounded-md" /> */}
+            <UserCircleIcon className="w-8 h-8" />
           </Link>
         </>
       )}
