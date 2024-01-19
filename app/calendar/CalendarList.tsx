@@ -163,13 +163,15 @@ export default function CalendarList() {
     <div className="flex flex-col justify-center items-center pb-10 gap-3">
       {isEditMode && <ShiftList header={false} setSelectedForParent={setSelectedShift} size={"small"} />}
 
-      <div className="flex w-full justify-end p-2">
-        <buttom
+      <div>
+        <button
           onClick={() => setIsEditMode(!isEditMode)}
-          className={`${isEditMode ? "btn-red" : "btn-black"}`}
+          className={`absolute top-1 right-1 !rounded-full w-12 h-12 text-3xl ${
+            isEditMode ? "btn-red" : "btn-blue"
+          }`}
         >
-          {isEditMode ? "Exit edit" : "Edit ❯"}
-        </buttom>
+          <div className="flex items-center justify-center w-full h-full">{isEditMode ? "X" : "+"}</div>
+        </button>
       </div>
 
       <FullCalendar

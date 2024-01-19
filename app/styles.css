@@ -117,7 +117,7 @@ body {
 }
 
 .btn-black {
-  @apply btn bg-neutral-800 hover:bg-neutral-900;
+  @apply btn bg-black;
 }
 
 .btn-blue {
@@ -126,6 +126,10 @@ body {
 
 .btn-red {
   @apply btn bg-red-600 hover:bg-red-700;
+}
+
+.btn-gray {
+  @apply btn bg-neutral-200 hover:bg-neutral-300 !text-black;
 }
 
 .btn-disabled {

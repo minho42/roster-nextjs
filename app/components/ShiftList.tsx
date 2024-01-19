@@ -109,7 +109,7 @@ export function ShiftList({ header, setSelectedForParent, size, refetchTogle }: 
                 </div>
               </div>
             ))}
-          <div className="flex flex-wrap break-all text-xs font-mono text-neutral-500">
+          <div className="flex flex-wrap break-all font-mono text-neutral-500">
             {selected ? (
               <div>
                 <span className="font-bold">[{selected?.title}]</span> ({selected?.id})

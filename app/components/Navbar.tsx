@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { auth, handleLogin, handleLogout } from "../firebase"
+import { auth, handleLogin } from "../firebase"
 import { onAuthStateChanged } from "firebase/auth"
 
 import { useEffect, useContext } from "react"
@@ -27,7 +27,7 @@ export default function Navbar() {
 
   return (
     // <nav className="flex justify-evenly items-center w-full flex-wrap sm:max-w-2xl px-4 h-12 gap-3">
-    <nav className="flex items-center w-full flex-wrap sm:max-w-2xl px-4 h-10 gap-2 text-neutral-500">
+    <nav className="flex items-center justify-center w-full flex-wrap sm:max-w-2xl px-4 h-10 gap-2 text-neutral-500">
       <Link href="/" className={` ${pathname === "/" ? "text-black font-semibold " : ""}`}>
         Home
       </Link>
@@ -49,12 +49,8 @@ export default function Navbar() {
             href="/profile"
             className={` ${pathname.includes("/profile") ? "text-black font-semibold " : ""}`}
           >
-            Profile
+            <img src={user.photoURL} alt="avatar" className="w-8 h-8 rounded-full" />
           </Link>
-          |
-          <button onClick={handleLogout} className="">
-            Logout
-          </button>
         </>
       )}
       {!isLoading && !user && (
