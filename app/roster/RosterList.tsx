@@ -282,17 +282,12 @@ export default function RosterList() {
       ></div>
       <div
         ref={popupRef}
-        className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-2 border-black rounded-md z-50 ${
-          isPopupVisible ? "inline-block" : "hidden"
-        }`}
+        className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
+        border border-neutral-400 rounded-xl z-50 ${isPopupVisible ? "inline-block" : "hidden"}`}
       >
-        <div
-          className="
-           z-10 w-56  rounded-md bg-white shadow-lg "
-          tabIndex={-1}
-        >
-          <div className="text-center space-y-2 py-3">
-            <div id="deleteOptionHeading" className="font-semibold border-b-1 border-neural-300"></div>
+        <div className="z-10 w-56 rounded-xl bg-white shadow-lg" tabIndex={-1}>
+          <div className="text-center space-y-2 px-3 py-5">
+            <div id="deleteOptionHeading" className="font-semibold"></div>
             <button id="deleteButton" onClick={handleDelete} className="btn-red" tabIndex={-1}>
               Delete
             </button>
