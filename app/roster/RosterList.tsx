@@ -21,6 +21,7 @@ import {
   limit,
   getDocs,
   addDoc,
+  updateDoc,
 } from "firebase/firestore"
 import { ShiftList, Shift } from "../components/ShiftList"
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline"
@@ -66,6 +67,7 @@ export default function RosterList() {
       await setDoc(docRef, {
         start,
         shift: doc(collection(db, `shifts/${uid}/shift`), shiftId),
+        incharge: false,
       })
     }
 
@@ -135,13 +137,12 @@ export default function RosterList() {
         const shiftId = doc.data().shift.id
         const title = await getShiftTitle(shiftId)
         // const title = doc.data().title
-        const start = doc.data().start
-        const color = getColorForTitle(title)
         return {
-          start,
+          start: doc.data().start,
           title,
-          color,
+          color: getColorForTitle(title),
           id: doc.id, // "id" to be used for fullcalendar event
+          incharge: doc.data().incharge,
         }
       })
     )
@@ -230,18 +231,16 @@ export default function RosterList() {
   }, [selectedShift])
 
   function handleEventClick(info) {
-    console.log(info.event.start)
+    console.log(info.event)
+    setSelectedEvent(info.event)
+    setIsPopupVisible(true)
+    console.log("eventClick", info.event.title)
     const startStr = info.event.start.toLocaleDateString("en-CA", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
     })
-    setIsPopupVisible(true)
-    console.log("eventClick", info.event.title)
-    setSelectedEvent(info.event)
-    popupRef.current.querySelector(
-      "#deleteOptionHeading"
-    ).textContent = `Delete: ${info.event.title} (${startStr})`
+    popupRef.current.querySelector("#popupHeading").textContent = `${info.event.title} (${startStr})`
   }
 
   async function handleDelete() {
@@ -253,6 +252,38 @@ export default function RosterList() {
     await deleteDoc(docRef)
     setRefchToggle(!refetchTogle)
 
+    setIsPopupVisible(false)
+  }
+
+  async function handleIncharge(e) {
+    console.log("handleIncharge")
+    if (!selectedEvent) return
+
+    const newInchargeValue = e.target.id === "yesRadio"
+    console.log("newInchargeValue: ", newInchargeValue)
+
+    // setSelectedEvent so radio button "checked" value can change
+    setSelectedEvent({
+      ...selectedEvent,
+      extendedProps: {
+        ...selectedEvent.extendedProps,
+        incharge: newInchargeValue,
+      },
+    })
+
+    try {
+      const docRef = doc(db, `roster/${user.uid}/shift/${selectedEvent.id}`)
+      await updateDoc(docRef, {
+        incharge: newInchargeValue,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+
+    setRefchToggle(!refetchTogle)
+    // switching incharge value from a -> b -> a (back to previous) doesn't work
+    // selectedEvent.id: undefined
+    // just close the popup once changed
     setIsPopupVisible(false)
   }
 
@@ -285,9 +316,51 @@ export default function RosterList() {
         className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
         border border-neutral-400 rounded-xl z-50 ${isPopupVisible ? "inline-block" : "hidden"}`}
       >
-        <div className="z-10 w-56 rounded-xl bg-white shadow-lg" tabIndex={-1}>
-          <div className="text-center space-y-2 px-3 py-5">
-            <div id="deleteOptionHeading" className="font-semibold"></div>
+        <div
+          className="z-10 w-56 rounded-xl text-center bg-white shadow-lg  divide-y overflow-hidden"
+          tabIndex={-1}
+        >
+          <div className="space-y-2 py-3 bg-blue-100">
+            <div id="popupHeading" className="font-semibold"></div>
+          </div>
+
+          <div className="space-y-2 px-3 py-5">
+            <div className="font-semibold">🏅 In-charge</div>
+
+            <div className="flex items-center justify-center gap-6">
+              <div className="flex flex-col py-1 px-3">
+                <label htmlFor="yesRadio">
+                  <input
+                    type="radio"
+                    name="inchargeToggle"
+                    id="yesRadio"
+                    className="w-8 h-8"
+                    onChange={handleIncharge}
+                    checked={selectedEvent?.extendedProps?.incharge === true}
+                  />
+                  <p>Yes</p>
+                </label>
+              </div>
+              <div className="flex flex-col py-1 px-3">
+                <label htmlFor="noRadio">
+                  <input
+                    type="radio"
+                    name="inchargeToggle"
+                    id="noRadio"
+                    className="w-8 h-8"
+                    onChange={handleIncharge}
+                    checked={
+                      selectedEvent?.extendedProps?.incharge === undefined ||
+                      selectedEvent?.extendedProps?.incharge === false
+                    }
+                  />
+                  <p>No</p>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div className="space-y-2 px-3 py-5">
+            <div className="font-semibold"></div>
             <button id="deleteButton" onClick={handleDelete} className="btn-red" tabIndex={-1}>
               Delete
             </button>
@@ -326,6 +399,23 @@ export default function RosterList() {
         eventTextColor="#000"
         selectable={true}
         dateClick={handleDateClick}
+        eventContent={function (arg) {
+          if (arg.event.extendedProps.incharge) {
+            return (
+              <div class="relative fc-event-title-container overflow-hidden">
+                <div class="absolute -top-4 -left-2 text-3xl">🏅</div>
+                <div class="fc-event-title fc-sticky">{arg.event.title}</div>
+              </div>
+            )
+          } else {
+            return (
+              <div class="fc-event-title-container">
+                <div class="fc-event-title fc-sticky">{arg.event.title}</div>
+              </div>
+            )
+          }
+          return true
+        }}
       />
     </div>
   )
