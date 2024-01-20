@@ -98,7 +98,7 @@ export default function Page() {
   if (!user) return <div>...</div>
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 py-3">
       <ShiftList
         header={true}
         setSelectedForParent={setSelectedShift}
