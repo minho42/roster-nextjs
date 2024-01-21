@@ -1,9 +1,6 @@
 "use client"
 
-import FullCalendar from "@fullcalendar/react"
-import dayGridPlugin from "@fullcalendar/daygrid"
-import interactionPlugin from "@fullcalendar/interaction"
-import { useState, useEffect, useRef, useContext, useCallback } from "react"
+import { useState, useEffect, useRef, useContext } from "react"
 import { UserContext } from "../UserContext"
 import { getColorForTitle } from "../utils"
 import { db } from "@/app/firebase"
@@ -25,11 +22,7 @@ import {
 } from "firebase/firestore"
 import { ShiftList, Shift } from "../components/ShiftList"
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline"
-
-function renderDayHeaderContent(args) {
-  const myDayNames = ["Su", "M", "Tu", "W", "Th", "F", "Sa"]
-  return myDayNames[args.date.getDay()]
-}
+import Calendar from "./Calendar"
 
 export default function RosterList() {
   const calendarRef = useRef()
@@ -384,54 +377,11 @@ export default function RosterList() {
         </div>
       </div>
 
-      <FullCalendar
-        ref={calendarRef}
-        plugins={[dayGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        fixedWeekCount={false}
-        displayEventTime={false}
-        locale="en-au"
-        height="400"
-        contentHeight="auto"
-        firstDay={1} // Sunday=0, Monday=1,
-        dayHeaderContent={renderDayHeaderContent}
-        titleFormat={{
-          year: "numeric",
-          month: "short",
-        }}
-        buttonText={{
-          today: "Today",
-        }}
-        headerToolbar={{
-          left: "title",
-          center: "",
-          right: "today,prev,next",
-        }}
+      <Calendar
+        calendarRef={calendarRef}
         events={events}
-        eventClick={handleEventClick}
-        eventOrder={"start,-duration,allDay,title"}
-        eventOrderStrict={false}
-        eventDisplay="block"
-        eventTextColor="#000"
-        selectable={true}
-        dateClick={handleDateClick}
-        eventContent={function (arg) {
-          if (arg.event.extendedProps.incharge) {
-            return (
-              <div class="relative fc-event-title-container overflow-hidden">
-                <div class="absolute -top-4 -left-2 text-3xl">🏅</div>
-                <div class="fc-event-title fc-sticky">{arg.event.title}</div>
-              </div>
-            )
-          } else {
-            return (
-              <div class="fc-event-title-container">
-                <div class="fc-event-title fc-sticky">{arg.event.title}</div>
-              </div>
-            )
-          }
-          return true
-        }}
+        handleEventClick={handleEventClick}
+        handleDateClick={handleDateClick}
       />
     </div>
   )
