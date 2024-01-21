@@ -231,7 +231,11 @@ export default function RosterList() {
     console.log("handleEventClick")
     console.log(JSON.stringify(info.event))
 
-    // TODO: prevent opening popup when creating a roster on mobile which opens popup with title ("...")
+    // when creating roster by selecting a date,
+    // it somehow triggers eventClick (handleEventClick) too after dateClick (handleDateClick)
+    // which results in popup with optimistic event title ("...")
+    // this only happens on mobile (real device)
+    // adding and checking for 'isFake' prevents this
     if (info.event.extendedProps.isFake) return
 
     setSelectedEvent(info.event)
