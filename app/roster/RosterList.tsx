@@ -78,6 +78,7 @@ export default function RosterList() {
       start: info.dateStr,
       backgroundColor: selectedShift ? getColorForTitle(selectedShift?.title) : "#fff",
       textColor: "#000",
+      isFake: true,
     })
 
     if (selectedShift) {
@@ -228,21 +229,20 @@ export default function RosterList() {
 
   function handleEventClick(info) {
     console.log("handleEventClick")
-    console.log(info.event)
+    console.log(JSON.stringify(info.event))
 
-    if (info.event && info.event?.title && info.event.title.length > 0) {
-      // prevent opening popup when creating a roster on mobile
-      // which opens popup with empty title
-      setSelectedEvent(info.event)
-      setIsPopupVisible(true)
-      console.log("eventClick", info.event.title)
-      const startStr = info.event.start.toLocaleDateString("en-CA", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      })
-      popupRef.current.querySelector("#popupHeading").textContent = `${info.event.title} (${startStr})`
-    }
+    // TODO: prevent opening popup when creating a roster on mobile which opens popup with title ("...")
+    if (info.event.extendedProps.isFake) return
+
+    setSelectedEvent(info.event)
+    setIsPopupVisible(true)
+    console.log("eventClick", info.event.title)
+    const startStr = info.event.start.toLocaleDateString("en-CA", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+    popupRef.current.querySelector("#popupHeading").textContent = `${info.event.title} (${startStr})`
   }
 
   async function handleDelete() {
