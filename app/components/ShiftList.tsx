@@ -73,7 +73,7 @@ export function ShiftList({ header, setSelectedForParent, size, refetchTogle }: 
       <div className="flex flex-col gap-6">
         <div
           className="flex items-center justify-center gap-3 flex-wrap p-4 
-            border border-neutral-300 rounded-lg"
+            border border-neutral-300 rounded-lg bg-white"
         >
           {shiftList &&
             shiftList.length > 0 &&

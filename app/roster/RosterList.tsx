@@ -291,7 +291,11 @@ export default function RosterList() {
 
   return (
     <div className="flex flex-col justify-center items-center pb-10 gap-3">
-      {isEditMode && <ShiftList header={false} setSelectedForParent={setSelectedShift} size={"small"} />}
+      {isEditMode && (
+        <div className="bg-blue-100 flex w-full items-center justify-center p-2">
+          <ShiftList header={false} setSelectedForParent={setSelectedShift} size={"small"} />
+        </div>
+      )}
 
       <div>
         {user && (
@@ -301,11 +305,11 @@ export default function RosterList() {
               isEditMode ? "btn-red" : "btn-blue"
             }`}
           >
-            <div className="flex items-center justify-center w-full h-full">
+            <div className="relative flex items-center justify-center w-full h-full">
               {isEditMode ? (
-                <XMarkIcon className="w-10 h-10" title="Hide shift list" />
+                <XMarkIcon className="absolute w-8 h-8" title="Hide shift list" />
               ) : (
-                <PlusIcon className="w-10 h-10" title="Show shift list" />
+                <PlusIcon className="absolute w-8 h-8" title="Show shift list" />
               )}
             </div>
           </button>
