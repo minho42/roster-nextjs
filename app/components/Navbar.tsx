@@ -40,7 +40,7 @@ export default function Navbar() {
       <Link href="/shift" className={` ${pathname.includes("/shift") ? "text-black font-semibold " : ""}`}>
         Shift
       </Link>
-      |{isLoading && <div className="bg-black rounded-md text-white text-sm px-2 py-1">Loading user...</div>}
+      |{isLoading && <div className="bg-black rounded-md text-white text-sm px-2 py-1">checking user...</div>}
       {!isLoading && user && (
         <>
           <Link
