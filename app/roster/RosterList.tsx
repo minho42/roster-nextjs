@@ -215,20 +215,19 @@ export default function RosterList() {
     console.log("handleEventClick")
     console.log(info.event)
 
-    if (!info.event?.title) {
-      // prevent opening popup when creating a roster
-      return
+    if (info.event && info.event?.title && info.event.title.length > 0) {
+      // prevent opening popup when creating a roster on mobile
+      // which opens popup with empty title
+      setSelectedEvent(info.event)
+      setIsPopupVisible(true)
+      console.log("eventClick", info.event.title)
+      const startStr = info.event.start.toLocaleDateString("en-CA", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+      popupRef.current.querySelector("#popupHeading").textContent = `${info.event.title} (${startStr})`
     }
-
-    setSelectedEvent(info.event)
-    setIsPopupVisible(true)
-    console.log("eventClick", info.event.title)
-    const startStr = info.event.start.toLocaleDateString("en-CA", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    })
-    popupRef.current.querySelector("#popupHeading").textContent = `${info.event.title} (${startStr})`
   }
 
   async function handleDelete() {
@@ -288,7 +287,11 @@ export default function RosterList() {
             }`}
           >
             <div className="flex items-center justify-center w-full h-full">
-              {isEditMode ? <XMarkIcon className="w-10 h-10" /> : <PlusIcon className="w-10 h-10" />}
+              {isEditMode ? (
+                <XMarkIcon className="w-10 h-10" title="Hide shift list" />
+              ) : (
+                <PlusIcon className="w-10 h-10" title="Show shift list" />
+              )}
             </div>
           </button>
         )}

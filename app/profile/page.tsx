@@ -8,7 +8,7 @@ export default function Page() {
   if (!user) return <div>...</div>
 
   return (
-    <div className="flex flex-col justify-center gap-3 py-3">
+    <div className="flex flex-col justify-center max-w-sm gap-3 py-3">
       <div>
         <p>{user.displayName}</p>
         <p>{user.email}</p>
