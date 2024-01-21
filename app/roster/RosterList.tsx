@@ -88,7 +88,7 @@ export default function RosterList() {
 
     const docRef = doc(db, `shifts/${user.uid}/shift`, shiftId)
     const docSnap = await getDoc(docRef)
-    if (docSnap.exists) {
+    if (docSnap.exists()) {
       // console.log(docSnap.data())
       // setTitles((prevTitles) => ({ ...prevTitles, [shiftId]: title }))
       const title = docSnap.data()?.title
