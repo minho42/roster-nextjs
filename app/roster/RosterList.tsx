@@ -44,15 +44,8 @@ export default function RosterList() {
   const [selectedEvent, setSelectedEvent] = useState(null)
   const [countDown, setCountDown] = useState(3)
 
-  async function createRoster(uid, start, shiftId) {
+  async function createRoster(uid: string, start: string, shiftId: string) {
     console.log("createRoster")
-    // Create roster using relashipship of shift
-    // const docRef = doc(collection(db, `roster/${uid}/shift/`))
-    // await setDoc(docRef, {
-    //   start,
-    //   shift: doc(collection(db, `shifts/${uid}/shift`), shiftId),
-    // })
-
     // check for duplicate
     const rosterColRef = collection(db, `roster/${uid}/shift/`)
     const querySnapshot = await getDocs(rosterColRef)
@@ -70,18 +63,6 @@ export default function RosterList() {
         incharge: false,
       })
     }
-
-    // Create roster by copying shift data, not using relationship
-    // const shiftDocRef = doc(db, `shifts/${uid}/shift`, shiftId)
-    // const shiftDocSnapshot = await getDoc(shiftDocRef)
-    // if (shiftDocSnapshot.exists()) {
-    //   const shiftData = shiftDocSnapshot.data()
-    //   const rosterDocRef = doc(collection(db, `roster/${uid}/shift/`))
-    //   await setDoc(rosterDocRef, {
-    //     start,
-    //     title: shiftData?.title,
-    //   })
-    // }
   }
 
   async function handleDateClick(info) {
@@ -105,7 +86,7 @@ export default function RosterList() {
     setRefchToggle(!refetchTogle)
   }
 
-  async function getShiftTitle(shiftId) {
+  async function getShiftTitle(shiftId: string) {
     // console.log("getShiftTitle")
     // if (titles[shiftId]) {
     //   console.log(`titles[${shiftId}]: ${titles[shiftId]} exist`)
@@ -231,7 +212,14 @@ export default function RosterList() {
   }, [selectedShift])
 
   function handleEventClick(info) {
+    console.log("handleEventClick")
     console.log(info.event)
+
+    if (!info.event?.title) {
+      // prevent opening popup when creating a roster
+      return
+    }
+
     setSelectedEvent(info.event)
     setIsPopupVisible(true)
     console.log("eventClick", info.event.title)
@@ -292,16 +280,18 @@ export default function RosterList() {
       {isEditMode && <ShiftList header={false} setSelectedForParent={setSelectedShift} size={"small"} />}
 
       <div>
-        <button
-          onClick={() => setIsEditMode(!isEditMode)}
-          className={`absolute top-1 right-1 !rounded-full w-12 h-12 text-3xl ${
-            isEditMode ? "btn-red" : "btn-blue"
-          }`}
-        >
-          <div className="flex items-center justify-center w-full h-full">
-            {isEditMode ? <XMarkIcon className="w-10 h-10" /> : <PlusIcon className="w-10 h-10" />}
-          </div>
-        </button>
+        {user && (
+          <button
+            onClick={() => setIsEditMode(!isEditMode)}
+            className={`absolute top-1 right-1 !rounded-full w-12 h-12 text-3xl ${
+              isEditMode ? "btn-red" : "btn-blue"
+            }`}
+          >
+            <div className="flex items-center justify-center w-full h-full">
+              {isEditMode ? <XMarkIcon className="w-10 h-10" /> : <PlusIcon className="w-10 h-10" />}
+            </div>
+          </button>
+        )}
       </div>
 
       <div
@@ -317,18 +307,18 @@ export default function RosterList() {
         border border-neutral-400 rounded-xl z-50 ${isPopupVisible ? "inline-block" : "hidden"}`}
       >
         <div
-          className="z-10 w-56 rounded-xl text-center bg-white shadow-lg  divide-y overflow-hidden"
+          className="z-10 w-52 rounded-xl text-center bg-white shadow-lg  divide-y overflow-hidden"
           tabIndex={-1}
         >
-          <div className="space-y-2 py-3 bg-blue-100">
+          <div className="space-y-2 px-2 py-3 bg-blue-100">
             <div id="popupHeading" className="font-semibold"></div>
           </div>
 
-          <div className="space-y-2 px-3 py-5">
+          <div className="space-y-2 py-4">
             <div className="font-semibold">🏅 In-charge</div>
 
             <div className="flex items-center justify-center gap-6">
-              <div className="flex flex-col py-1 px-3">
+              <div className="flex flex-col">
                 <label htmlFor="yesRadio">
                   <input
                     type="radio"
@@ -341,7 +331,7 @@ export default function RosterList() {
                   <p>Yes</p>
                 </label>
               </div>
-              <div className="flex flex-col py-1 px-3">
+              <div className="flex flex-col">
                 <label htmlFor="noRadio">
                   <input
                     type="radio"
@@ -359,7 +349,7 @@ export default function RosterList() {
               </div>
             </div>
           </div>
-          <div className="space-y-2 px-3 py-5">
+          <div className="space-y-2 py-4">
             <div className="font-semibold"></div>
             <button id="deleteButton" onClick={handleDelete} className="btn-red" tabIndex={-1}>
               Delete

@@ -109,10 +109,9 @@ export function ShiftList({ header, setSelectedForParent, size, refetchTogle }: 
                 </div>
               </div>
             ))}
-          <div className="flex flex-wrap break-all font-mono text-neutral-500">
+          <div className="flex flex-wrap break-all text-neutral-500">
             {selected ? (
               <div>
-                <span className="font-bold">[{selected?.title}]</span> ({selected?.id})
                 <p
                   className="text-center text-blue-600 underline cursor-pointer"
                   onClick={() => {
@@ -124,7 +123,7 @@ export function ShiftList({ header, setSelectedForParent, size, refetchTogle }: 
                 </p>
               </div>
             ) : (
-              <p>"Not selected"</p>
+              ""
             )}
           </div>
         </div>
