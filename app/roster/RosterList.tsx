@@ -133,12 +133,20 @@ export default function RosterList() {
     setEvents(excludeUndefinedEvents)
   }
 
-  function keyboardShortcuts(e) {
-    if (!isPopupVisible) return
+  function keyboardShortcuts(e: KeyboardEvent) {
+    // if (!isPopupVisible) return
 
-    // esc to close popup
-    if (e.keyCode === 27) {
+    const calApi = calendarRef.current.getApi()
+
+    if (e.key === "Escape") {
+      // esc: close popup
       handlePopupClose()
+    } else if (e.key === "p" || e.key === "P") {
+      calApi.prev()
+    } else if (e.key === "n" || e.key === "N") {
+      calApi.next()
+    } else if (e.key === "t" || e.key === "T") {
+      calApi.today()
     }
   }
 
@@ -154,6 +162,13 @@ export default function RosterList() {
     console.log("calApi.render")
     calApi.render()
   }, [user, refetchTogle])
+
+  useEffect(() => {
+    document.addEventListener("keydown", keyboardShortcuts)
+    return () => {
+      document.removeEventListener("keydown", keyboardShortcuts)
+    }
+  }, [calendarRef.current])
 
   useEffect(() => {
     document.addEventListener("keydown", keyboardShortcuts)
