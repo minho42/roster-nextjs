@@ -1,0 +1,25 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+		match /roster/{userId}/shift/{rosterId} {
+      allow create: if isAuthenticated();
+      allow read, update, delete: if isAuthenticated() && isSameUser(userId);
+    }
+		
+    match /shifts/{userId}/shift/{shiftId} {
+    	allow create: if isAuthenticated();
+      allow read, update, delete: if isAuthenticated() && isSameUser(userId);
+    }
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isSameUser(userId) {
+      return request.auth.uid == userId;
+    }
+
+  }
+}
