@@ -60,6 +60,7 @@ export default function Page() {
       modifiedAt: serverTimestamp(),
     })
 
+    inputCreateRef.current.value = ""
     inputUpdateRef.current.value = ""
     inputUpdateRef.current.focus()
     setRefchToggle(!refetchTogle)
@@ -90,6 +91,7 @@ export default function Page() {
       })
     }
 
+    inputUpdateRef.current.value = ""
     inputCreateRef.current.value = ""
     inputCreateRef.current.focus()
     setRefchToggle(!refetchTogle)
@@ -107,8 +109,8 @@ export default function Page() {
       />
 
       <form onSubmit={handleCreate}>
-        <div className="flex items-start justify-center gap-2">
-          <label htmlFor="create" className="font-semibold mb-2">
+        <div className="flex items-center justify-center gap-2">
+          <label htmlFor="create" className="flex items-center justify-center font-semibold ">
             Add
             <input
               ref={inputCreateRef}
@@ -117,7 +119,7 @@ export default function Page() {
               name="create"
               maxLength={12}
               placeholder=""
-              className="w-32 border border-neutral-400 rounded py-2 px-3 ml-2"
+              className="w-28 border border-neutral-400 rounded py-2 px-3 ml-2 font-normal"
             />
           </label>
           <button className={`${selectedShift ? "btn-disabled" : "btn-blue"}`}>Add</button>
@@ -125,9 +127,9 @@ export default function Page() {
       </form>
 
       <form onSubmit={handleUpdate}>
-        <div className="flex items-start justify-center gap-2">
-          <label htmlFor="update" className="font-semibold mb-2">
-            {selectedShift ? `Change \"${selectedShift.title}\" to ` : "Update"}
+        <div className="flex items-center justify-center gap-2">
+          <label htmlFor="update" className="flex items-center justify-center font-semibold  text-right">
+            {selectedShift ? `Change \[${selectedShift.title}\] to ` : "Update"}
             <input
               ref={inputUpdateRef}
               type="text"
@@ -135,7 +137,7 @@ export default function Page() {
               name="update"
               maxLength={12}
               placeholder=""
-              className="w-32 border border-neutral-400 rounded py-2 px-3 ml-2"
+              className="w-28 border border-neutral-400 rounded py-2 px-3 ml-2 font-normal"
             />
           </label>
           <button className={`${!selectedShift ? "btn-disabled" : "btn-blue"}`}>Update</button>
