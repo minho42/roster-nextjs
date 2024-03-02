@@ -30,10 +30,6 @@ export default function Navbar() {
     // <nav className="flex justify-evenly items-center w-full flex-wrap sm:max-w-2xl px-4 h-12 gap-3">
     <nav className="flex items-center justify-center w-full flex-wrap sm:max-w-2xl px-4 h-10 gap-2 text-neutral-500">
       <Link href="/" className={` ${pathname === "/" ? "text-black font-semibold " : ""}`}>
-        Home
-      </Link>
-      |
-      <Link href="/roster" className={` ${pathname.includes("/roster") ? "text-black font-semibold " : ""}`}>
         Roster
       </Link>
       |

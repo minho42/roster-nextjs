@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect, useRef, useContext } from "react"
-import { UserContext } from "../UserContext"
-import { getColorForTitle } from "../utils"
+import { UserContext } from "./UserContext"
+import { getColorForTitle } from "./utils"
 import { db } from "@/app/firebase"
 import {
   collection,
@@ -20,7 +20,7 @@ import {
   addDoc,
   updateDoc,
 } from "firebase/firestore"
-import { ShiftList, Shift } from "../components/ShiftList"
+import { ShiftList, Shift } from "./components/ShiftList"
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline"
 import Calendar from "./Calendar"
 
