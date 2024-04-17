@@ -109,21 +109,24 @@ export default function Page() {
       />
 
       <form onSubmit={handleCreate}>
-        <div className="flex items-center justify-center gap-2">
-          <label htmlFor="create" className="flex items-center justify-center font-semibold ">
-            Add
-            <input
-              ref={inputCreateRef}
-              type="text"
-              id="create"
-              name="create"
-              maxLength={12}
-              placeholder=""
-              className="w-28 border border-neutral-400 rounded py-2 px-3 ml-2 font-normal"
-            />
-          </label>
-          <button className={`${selectedShift ? "btn-disabled" : "btn-blue"}`}>Add</button>
-        </div>
+        {!selectedShift && (
+          <div className="flex items-center justify-center gap-2">
+            <label htmlFor="create" className="flex items-center justify-center font-semibold ">
+              Add
+              <input
+                ref={inputCreateRef}
+                type="text"
+                id="create"
+                name="create"
+                maxLength={12}
+                placeholder=""
+                className="w-28 border border-neutral-400 rounded py-2 px-3 ml-2 font-normal"
+                disabled={selectedShift}
+              />
+            </label>
+            <button className={`${selectedShift ? "btn-disabled" : "btn-blue"}`}>Add</button>
+          </div>
+        )}
       </form>
 
       <form onSubmit={handleUpdate}>
