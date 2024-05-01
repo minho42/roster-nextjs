@@ -5,7 +5,7 @@ import { handleLogin } from "./../firebase"
 import { UserContext } from "../UserContext"
 
 export default function page() {
-  const { user } = useContext(UserContext)
+  const { user } = useContext(UserContext) || {}
   if (user) {
     return <p>You're logged in</p>
   }

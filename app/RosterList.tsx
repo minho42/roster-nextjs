@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef, useContext } from "react"
+import { useState, useEffect, useRef, useContext, MutableRefObject, ChangeEvent } from "react"
 import { UserContext } from "./UserContext"
 import { getColorForTitle } from "./utils"
 import { db } from "@/app/firebase"
@@ -22,19 +22,23 @@ import {
 } from "firebase/firestore"
 import { ShiftList, Shift } from "./components/ShiftList"
 import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline"
+import { DateClickArg } from "@fullcalendar/interaction"
+
 import Calendar from "./Calendar"
+import { EventClickArg, EventSourceInput } from "@fullcalendar/core"
+import { EventImpl } from "@fullcalendar/core/internal"
 
 export default function RosterList() {
-  const calendarRef = useRef()
-  const popupRef = useRef()
-  const { user, setUser } = useContext(UserContext)
+  const calendarRef = useRef(null)
+  const popupRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
+  const { user, setUser } = useContext(UserContext) || {}
   const [titles, setTitles] = useState({})
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null)
   const [isEditMode, setIsEditMode] = useState(false)
-  const [events, setEvents] = useState([])
+  const [events, setEvents] = useState<EventSourceInput | []>([])
   const [refetchTogle, setRefchToggle] = useState(false)
   const [isPopupVisible, setIsPopupVisible] = useState(false)
-  const [selectedEvent, setSelectedEvent] = useState(null)
+  const [selectedEvent, setSelectedEvent] = useState<EventImpl | null>(null)
   const [countDown, setCountDown] = useState(3)
 
   async function createRoster(uid: string, start: string, shiftId: string) {
@@ -58,7 +62,7 @@ export default function RosterList() {
     }
   }
 
-  async function handleDateClick(info) {
+  async function handleDateClick(info: DateClickArg) {
     console.log("handleDateClick")
     console.log("dateClick", info.dateStr)
     if (!user || !selectedShift) return
@@ -167,7 +171,7 @@ export default function RosterList() {
   useEffect(() => {
     document.addEventListener("keydown", keyboardShortcuts)
 
-    let countDownInterval
+    let countDownInterval: NodeJS.Timeout | undefined
 
     if (isPopupVisible) {
       countDownInterval = setInterval(function () {
@@ -186,7 +190,9 @@ export default function RosterList() {
 
   useEffect(() => {
     if (popupRef?.current) {
-      const deleteBtn = popupRef.current.querySelector("#deleteButton")
+      const deleteBtn = popupRef.current.querySelector<HTMLButtonElement>("#deleteButton")
+      if (!deleteBtn) return
+
       deleteBtn.textContent = countDown > 0 ? `Delete (${countDown})` : "Delete"
 
       if (countDown > 0) {
@@ -207,7 +213,8 @@ export default function RosterList() {
     if (!calendarRef?.current) return
 
     const calApi = calendarRef.current.getApi()
-    const table = calApi.el.querySelector("table")
+    const table: HTMLTableElement | null = calApi.el.querySelector("table")
+    if (!table) return
 
     if (selectedShift) {
       table.style.borderColor = getColorForTitle(selectedShift.title)
@@ -220,7 +227,7 @@ export default function RosterList() {
     }
   }, [selectedShift])
 
-  function handleEventClick(info) {
+  function handleEventClick(info: EventClickArg): void | undefined {
     console.log("handleEventClick")
     console.log(JSON.stringify(info.event))
 
@@ -239,7 +246,11 @@ export default function RosterList() {
       month: "2-digit",
       day: "2-digit",
     })
-    popupRef.current.querySelector("#popupHeading").textContent = `${info.event.title} (${startStr})`
+
+    const popupHeading: HTMLDivElement | null = popupRef.current.querySelector("#popupHeading")
+    if (popupHeading) {
+      popupHeading.textContent = `${info.event.title} (${startStr})`
+    }
   }
 
   async function handleDelete() {
@@ -254,7 +265,7 @@ export default function RosterList() {
     setIsPopupVisible(false)
   }
 
-  async function handleIncharge(e) {
+  async function handleIncharge(e: ChangeEvent<HTMLInputElement>) {
     console.log("handleIncharge")
     if (!selectedEvent) return
 

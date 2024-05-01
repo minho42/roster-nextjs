@@ -11,7 +11,13 @@ import { UserCircleIcon } from "@heroicons/react/24/outline"
 
 export default function Navbar() {
   const pathname = usePathname()
-  const { user, setUser, isLoading, setIsLoading } = useContext(UserContext)
+  const contextValue = useContext(UserContext)
+
+  if (!contextValue) {
+    return null
+  }
+
+  const { user, setUser, isLoading, setIsLoading } = contextValue
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {

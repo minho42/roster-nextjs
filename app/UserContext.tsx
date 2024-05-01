@@ -1,20 +1,5 @@
 import React, { createContext, useState, ReactNode } from "react"
-
-type FirebaseUser = {
-  uid: string
-  email: string
-  emailVerified: boolean
-  displayName: string
-  isAnonymous: boolean
-  photoURL: string | null
-  providerData: ProviderData[]
-  stsTokenManager: StsTokenManager
-  metadata: UserMetadata
-  createdAt: string
-  lastLoginAt: string
-  apiKey: string
-  appName: string
-}
+import { User } from "firebase/auth"
 
 type ProviderData = {
   providerId: string
@@ -37,8 +22,8 @@ type UserMetadata = {
 }
 
 type UserProviderProps = {
-  user: FirebaseUser | null
-  setUser: React.Dispatch<React.SetStateAction<FirebaseUser | null>>
+  user: User | null
+  setUser: React.Dispatch<React.SetStateAction<User | null>>
   isLoading: boolean
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -46,7 +31,7 @@ type UserProviderProps = {
 export const UserContext = createContext<UserProviderProps | null>(null)
 
 export function UserProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<FirebaseUser | null>(null)
+  const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   return (

@@ -33,14 +33,14 @@ type PropType = {
   header: boolean
   setSelectedForParent: React.Dispatch<React.SetStateAction<Shift | null>>
   size: "small" | "medium" | "large"
-  refetchTogle: boolean
+  refetchTogle?: boolean
 }
 
 export function ShiftList({ header, setSelectedForParent, size, refetchTogle }: PropType) {
-  const { user } = useContext(UserContext)
+  const { user } = useContext(UserContext) || {}
 
-  const [shiftList, setShiftList] = useState([])
-  const [selected, setSelected] = useState(null)
+  const [shiftList, setShiftList] = useState<Shift[] | []>([])
+  const [selected, setSelected] = useState<Shift | null>(null)
 
   async function getShiftList() {
     console.log("getShiftList")

@@ -4,7 +4,7 @@ import { UserContext } from "../UserContext"
 import { handleLogout } from "../firebase"
 
 export default function Page() {
-  const { user } = useContext(UserContext)
+  const { user } = useContext(UserContext) || {}
   if (!user) return <div>...</div>
 
   return (

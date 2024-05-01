@@ -1,13 +1,29 @@
+import { LegacyRef } from "react"
 import FullCalendar from "@fullcalendar/react"
+import {
+  DayHeaderContentArg,
+  Calendar as CalendarRef,
+  CalendarOptions,
+  EventClickArg,
+  EventSourceInput,
+} from "@fullcalendar/core"
+import { DateClickArg } from "@fullcalendar/interaction"
 import dayGridPlugin from "@fullcalendar/daygrid"
 import interactionPlugin from "@fullcalendar/interaction"
 
-function renderDayHeaderContent(args) {
+function renderDayHeaderContent(args: DayHeaderContentArg) {
   const myDayNames = ["Su", "M", "Tu", "W", "Th", "F", "Sa"]
   return myDayNames[args.date.getDay()]
 }
 
-export default function Calendar({ calendarRef, events, handleEventClick, handleDateClick }) {
+type CalendarProps = {
+  calendarRef: LegacyRef<FullCalendar> | undefined
+  events: EventSourceInput
+  handleEventClick: (arg: EventClickArg) => void | undefined
+  handleDateClick: (arg: DateClickArg) => Promise<void> | void
+}
+
+export default function Calendar({ calendarRef, events, handleEventClick, handleDateClick }: CalendarProps) {
   return (
     <FullCalendar
       ref={calendarRef}
@@ -55,7 +71,6 @@ export default function Calendar({ calendarRef, events, handleEventClick, handle
             </div>
           )
         }
-        return true
       }}
     />
   )
