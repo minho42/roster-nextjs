@@ -36,7 +36,7 @@ export default function RosterList() {
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null)
   const [isEditMode, setIsEditMode] = useState(false)
   const [events, setEvents] = useState<EventSourceInput | []>([])
-  const [refetchTogle, setRefchToggle] = useState(false)
+  const [refetchTogle, setRefetchToggle] = useState(false)
   const [isPopupVisible, setIsPopupVisible] = useState(false)
   const [isDeleteBtnHovered, setIsDeleteBtnHovered] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<EventImpl | null>(null)
@@ -82,7 +82,7 @@ export default function RosterList() {
     if (selectedShift) {
       await createRoster(user.uid, info.dateStr, selectedShift?.id)
     }
-    setRefchToggle(!refetchTogle)
+    setRefetchToggle(!refetchTogle)
   }
 
   async function getShiftTitle(shiftId: string) {
@@ -276,7 +276,7 @@ export default function RosterList() {
     console.log(`roster/${user.uid}/shift/${selectedEvent.id}`)
     const docRef = doc(db, `roster/${user.uid}/shift/${selectedEvent.id}`)
     await deleteDoc(docRef)
-    setRefchToggle(!refetchTogle)
+    setRefetchToggle(!refetchTogle)
 
     setIsPopupVisible(false)
   }
@@ -306,7 +306,7 @@ export default function RosterList() {
       console.log(error)
     }
 
-    setRefchToggle(!refetchTogle)
+    setRefetchToggle(!refetchTogle)
     // switching incharge value from a -> b -> a (back to previous) doesn't work
     // selectedEvent.id: undefined
     // just close the popup once changed
