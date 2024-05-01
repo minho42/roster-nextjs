@@ -10,7 +10,7 @@ export default function Page() {
   return (
     <div className="flex flex-col justify-center max-w-sm gap-3 py-3">
       <div>
-        <p>{user.displayName}</p>
+        <p className="font-bold">{user.displayName}</p>
         <p>{user.email}</p>
       </div>
 
