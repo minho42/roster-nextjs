@@ -38,6 +38,7 @@ export default function RosterList() {
   const [events, setEvents] = useState<EventSourceInput | []>([])
   const [refetchTogle, setRefchToggle] = useState(false)
   const [isPopupVisible, setIsPopupVisible] = useState(false)
+  const [isDeleteBtnHovered, setIsDeleteBtnHovered] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<EventImpl | null>(null)
   const [countDown, setCountDown] = useState(3)
 
@@ -149,7 +150,9 @@ export default function RosterList() {
   }
 
   function handlePopupClose() {
+    console.log("handlePopupClose")
     setIsPopupVisible(false)
+    setIsDeleteBtnHovered(false)
     setSelectedEvent(null)
   }
 
@@ -173,7 +176,7 @@ export default function RosterList() {
 
     let countDownInterval: NodeJS.Timeout | undefined
 
-    if (isPopupVisible) {
+    if (isPopupVisible && isDeleteBtnHovered) {
       countDownInterval = setInterval(function () {
         setCountDown((countDown) => countDown - 1)
       }, 1000)
@@ -186,7 +189,7 @@ export default function RosterList() {
       document.removeEventListener("keydown", keyboardShortcuts)
       clearInterval(countDownInterval)
     }
-  }, [isPopupVisible])
+  }, [isPopupVisible, isDeleteBtnHovered])
 
   useEffect(() => {
     if (popupRef?.current) {
@@ -251,6 +254,19 @@ export default function RosterList() {
     if (popupHeading) {
       popupHeading.textContent = `${info.event.title} (${startStr})`
     }
+  }
+
+  async function handleNoteChange() {
+    console.log("handleNoteChange")
+    // todo: save the note
+    // indicate if note exists
+  }
+
+  function handleDeleteMouseOver() {
+    console.log("handleDeleteMouseOver")
+    if (!selectedEvent) return
+
+    setIsDeleteBtnHovered(true)
   }
 
   async function handleDelete() {
@@ -344,7 +360,7 @@ export default function RosterList() {
             <div id="popupHeading" className="font-semibold"></div>
           </div>
 
-          <div className="space-y-2 py-4">
+          <div className="space-y-2 py-2">
             <div className="font-semibold">🏅 In-charge</div>
 
             <div className="flex items-center justify-center gap-6">
@@ -379,9 +395,24 @@ export default function RosterList() {
               </div>
             </div>
           </div>
+          <div className="space-y-2 py-2 bg-neutral-100 p-2 text-sm">
+            <div className="font-semibold ">Note</div>
+            <textarea
+              onChange={handleNoteChange}
+              className="w-full p-1"
+              name="note"
+              id="note"
+              rows={2}
+            ></textarea>
+          </div>
           <div className="space-y-2 py-4">
-            <div className="font-semibold"></div>
-            <button id="deleteButton" onClick={handleDelete} className="btn-red" tabIndex={-1}>
+            <button
+              id="deleteButton"
+              onMouseOver={handleDeleteMouseOver}
+              onClick={handleDelete}
+              className="btn-red"
+              tabIndex={-1}
+            >
               Delete
             </button>
           </div>
