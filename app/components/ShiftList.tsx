@@ -38,7 +38,7 @@ type PropType = {
 
 export function ShiftList({ header, setSelectedForParent, size, refetchTogle }: PropType) {
   const { user } = useContext(UserContext) || {}
-
+  const [isLoading, setIsLoading] = useState(false)
   const [shiftList, setShiftList] = useState<Shift[] | []>([])
   const [selected, setSelected] = useState<Shift | null>(null)
 
@@ -47,6 +47,7 @@ export function ShiftList({ header, setSelectedForParent, size, refetchTogle }: 
     if (!user) {
       return setShiftList([])
     }
+    setIsLoading(true)
     const colRef = collection(db, `shifts/${user.uid}/shift`)
     const q = query(colRef, orderBy("createdAt", "asc"))
     try {
@@ -58,6 +59,7 @@ export function ShiftList({ header, setSelectedForParent, size, refetchTogle }: 
     } catch (error) {
       console.log(error)
     }
+    setIsLoading(false)
   }
   useEffect(() => {
     setSelected(null)
@@ -65,7 +67,7 @@ export function ShiftList({ header, setSelectedForParent, size, refetchTogle }: 
     getShiftList()
   }, [user, refetchTogle])
 
-  if (!user) return <div>...</div>
+  if (!user || isLoading) return <div>...</div>
 
   return (
     <div className="flex flex-col sm:max-w-lg">
