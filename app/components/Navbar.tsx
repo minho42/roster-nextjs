@@ -33,7 +33,6 @@ export default function Navbar() {
   }, [])
 
   return (
-    // <nav className="flex justify-evenly items-center w-full flex-wrap sm:max-w-2xl px-4 h-12 gap-3">
     <nav className="flex items-center justify-center w-full flex-wrap sm:max-w-2xl px-4 h-10 gap-2 text-neutral-500">
       <Link href="/" className={` ${pathname === "/" ? "text-black font-semibold " : ""}`}>
         Roster
@@ -46,7 +45,7 @@ export default function Navbar() {
       {isLoading && (
         <div>
           <MagnifyingGlassCircleIcon
-            className="w-8 h-8 animate-pulse text-neutral-400 "
+            className="size-8 animate-pulse text-neutral-400 "
             title="Checking user"
           />
         </div>
@@ -57,8 +56,7 @@ export default function Navbar() {
             href="/profile"
             className={` ${pathname.includes("/profile") ? "text-black font-semibold " : ""}`}
           >
-            {/* <img src={user.photoURL} alt="avatar" className="w-8 h-8 rounded-md" /> */}
-            <UserCircleIcon className="w-8 h-8" />
+            <UserCircleIcon className="size-8" />
           </Link>
         </>
       )}
