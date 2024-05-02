@@ -21,7 +21,7 @@ import {
   updateDoc,
 } from "firebase/firestore"
 import { ShiftList, Shift } from "./components/ShiftList"
-import { PlusIcon, XMarkIcon } from "@heroicons/react/24/outline"
+import { PlusIcon, XMarkIcon, EllipsisVerticalIcon, TrashIcon } from "@heroicons/react/24/outline"
 import { DateClickArg } from "@fullcalendar/interaction"
 
 import Calendar from "./Calendar"
@@ -31,6 +31,7 @@ import { EventImpl } from "@fullcalendar/core/internal"
 export default function RosterList() {
   const calendarRef = useRef(null)
   const popupRef: MutableRefObject<HTMLDivElement | null> = useRef(null)
+  const textRef = useRef(null)
   const { user, setUser } = useContext(UserContext) || {}
   const [titles, setTitles] = useState({})
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null)
@@ -38,9 +39,9 @@ export default function RosterList() {
   const [events, setEvents] = useState<EventSourceInput | []>([])
   const [refetchTogle, setRefetchToggle] = useState(false)
   const [isPopupVisible, setIsPopupVisible] = useState(false)
-  const [isDeleteBtnHovered, setIsDeleteBtnHovered] = useState(false)
   const [selectedEvent, setSelectedEvent] = useState<EventImpl | null>(null)
-  const [countDown, setCountDown] = useState(3)
+  const [note, setNote] = useState("")
+  const [popupHeading, setPopupHeading] = useState("")
 
   async function createRoster(uid: string, start: string, shiftId: string) {
     console.log("createRoster")
@@ -133,8 +134,6 @@ export default function RosterList() {
   }
 
   function keyboardShortcuts(e: KeyboardEvent) {
-    // if (!isPopupVisible) return
-
     const calApi = calendarRef.current.getApi()
 
     if (e.key === "Escape") {
@@ -152,9 +151,19 @@ export default function RosterList() {
   function handlePopupClose() {
     console.log("handlePopupClose")
     setIsPopupVisible(false)
-    setIsDeleteBtnHovered(false)
+    setNote("")
+    textRef.current.value = ""
+    setPopupHeading("")
     setSelectedEvent(null)
   }
+
+  useEffect(() => {
+    document.addEventListener("keydown", keyboardShortcuts)
+
+    return () => {
+      document.removeEventListener("keydown", keyboardShortcuts)
+    }
+  }, [])
 
   useEffect(() => {
     getRosterList()
@@ -170,41 +179,6 @@ export default function RosterList() {
       document.removeEventListener("keydown", keyboardShortcuts)
     }
   }, [calendarRef.current])
-
-  useEffect(() => {
-    document.addEventListener("keydown", keyboardShortcuts)
-
-    let countDownInterval: NodeJS.Timeout | undefined
-
-    if (isPopupVisible && isDeleteBtnHovered) {
-      countDownInterval = setInterval(function () {
-        setCountDown((countDown) => countDown - 1)
-      }, 1000)
-    } else {
-      setCountDown(3)
-      clearInterval(countDownInterval)
-    }
-
-    return () => {
-      document.removeEventListener("keydown", keyboardShortcuts)
-      clearInterval(countDownInterval)
-    }
-  }, [isPopupVisible, isDeleteBtnHovered])
-
-  useEffect(() => {
-    if (popupRef?.current) {
-      const deleteBtn = popupRef.current.querySelector<HTMLButtonElement>("#deleteButton")
-      if (!deleteBtn) return
-
-      deleteBtn.textContent = countDown > 0 ? `Delete (${countDown})` : "Delete"
-
-      if (countDown > 0) {
-        deleteBtn.disabled = true
-      } else {
-        deleteBtn.disabled = false
-      }
-    }
-  }, [countDown])
 
   useEffect(() => {
     if (!isEditMode) {
@@ -250,23 +224,7 @@ export default function RosterList() {
       day: "2-digit",
     })
 
-    const popupHeading: HTMLDivElement | null = popupRef.current.querySelector("#popupHeading")
-    if (popupHeading) {
-      popupHeading.textContent = `${info.event.title} (${startStr})`
-    }
-  }
-
-  async function handleNoteChange() {
-    console.log("handleNoteChange")
-    // todo: save the note
-    // indicate if note exists
-  }
-
-  function handleDeleteMouseOver() {
-    console.log("handleDeleteMouseOver")
-    if (!selectedEvent) return
-
-    setIsDeleteBtnHovered(true)
+    setPopupHeading(`${info.event.title} (${startStr})`)
   }
 
   async function handleDelete() {
@@ -279,6 +237,19 @@ export default function RosterList() {
     setRefetchToggle(!refetchTogle)
 
     setIsPopupVisible(false)
+  }
+
+  function handleTextChange() {
+    console.log("handleTextChange")
+    if (!selectedEvent) return
+
+    console.log(textRef.current.value)
+    setNote(textRef.current.value.trim())
+  }
+
+  async function handleTextSave() {
+    if (!textRef.current.value) return
+    handlePopupClose()
   }
 
   async function handleIncharge(e: ChangeEvent<HTMLInputElement>) {
@@ -325,15 +296,15 @@ export default function RosterList() {
         {user && (
           <button
             onClick={() => setIsEditMode(!isEditMode)}
-            className={`absolute top-1 right-1 !rounded-full w-12 h-12 text-3xl ${
+            className={`absolute top-1 right-1 !rounded-full size-12 text-3xl ${
               isEditMode ? "btn-red" : "btn-blue"
             }`}
           >
             <div className="relative flex items-center justify-center w-full h-full">
               {isEditMode ? (
-                <XMarkIcon className="absolute w-8 h-8" title="Hide shift list" />
+                <XMarkIcon className="absolute size-8" title="Hide shift list" />
               ) : (
-                <PlusIcon className="absolute w-8 h-8" title="Show shift list" />
+                <PlusIcon className="absolute size-8" title="Show shift list" />
               )}
             </div>
           </button>
@@ -353,24 +324,43 @@ export default function RosterList() {
         border border-neutral-400 rounded-xl z-50 ${isPopupVisible ? "inline-block" : "hidden"}`}
       >
         <div
-          className="z-10 w-52 rounded-xl text-center bg-white shadow-lg  divide-y overflow-hidden"
+          className="z-10 w-56 rounded-xl text-center bg-white shadow-lg overflow-hidden px-2 py-2"
           tabIndex={-1}
         >
-          <div className="space-y-2 px-2 py-3 bg-blue-100">
-            <div id="popupHeading" className="font-semibold"></div>
+          <div className="flex items-center justify-between px-2 pb-2">
+            <div
+              onClick={handleDelete}
+              className="hover:bg-neutral-100 rounded-full px-2.5 py-2.5 cursor-pointer"
+              title="Delete"
+            >
+              <TrashIcon className="size-5" />
+            </div>
+            <div
+              onClick={handlePopupClose}
+              className="flex items-center justify-center bg-neutral-100 rounded-full px-2.5 py-2.5 cursor-pointer"
+              title="Close"
+            >
+              <XMarkIcon className="size-6" />
+            </div>
           </div>
-
+          <div className="flex items-center justify-center gap-2 py-2">
+            <div
+              className="rounded size-4"
+              style={{ backgroundColor: getColorForTitle(selectedEvent?.title) }}
+            ></div>
+            <div className="text-xl">{popupHeading}</div>
+          </div>
           <div className="space-y-2 py-2">
-            <div className="font-semibold">🏅 In-charge</div>
+            <div className="">🏅 In-charge</div>
 
-            <div className="flex items-center justify-center gap-6">
+            <div className="flex items-center justify-evenly gap-6">
               <div className="flex flex-col">
                 <label htmlFor="yesRadio">
                   <input
                     type="radio"
                     name="inchargeToggle"
                     id="yesRadio"
-                    className="w-8 h-8"
+                    className="size-8"
                     onChange={handleIncharge}
                     checked={selectedEvent?.extendedProps?.incharge === true}
                   />
@@ -383,7 +373,7 @@ export default function RosterList() {
                     type="radio"
                     name="inchargeToggle"
                     id="noRadio"
-                    className="w-8 h-8"
+                    className="size-8"
                     onChange={handleIncharge}
                     checked={
                       selectedEvent?.extendedProps?.incharge === undefined ||
@@ -395,25 +385,24 @@ export default function RosterList() {
               </div>
             </div>
           </div>
-          <div className="space-y-2 py-2 bg-neutral-100 p-2 text-sm">
-            <div className="font-semibold ">Note</div>
+          <hr />
+          <div className="space-y-2 p-2 text-sm">
+            <div className="">Note</div>
             <textarea
-              onChange={handleNoteChange}
-              className="w-full p-1"
+              ref={textRef}
+              className="w-full border border-neutral-300 p-1"
+              onChange={handleTextChange}
               name="note"
               id="note"
               rows={2}
             ></textarea>
-          </div>
-          <div className="space-y-2 py-4">
             <button
-              id="deleteButton"
-              onMouseOver={handleDeleteMouseOver}
-              onClick={handleDelete}
-              className="btn-red"
-              tabIndex={-1}
+              className={`${
+                note.length > 0 ? "btn-blue border-transparent " : "btn-disabled"
+              } w-full border border-neutral-300`}
+              onClick={handleTextSave}
             >
-              Delete
+              Save
             </button>
           </div>
         </div>

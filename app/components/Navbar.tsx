@@ -7,7 +7,7 @@ import { onAuthStateChanged } from "firebase/auth"
 
 import { useEffect, useContext } from "react"
 import { UserContext } from "../UserContext"
-import { UserCircleIcon } from "@heroicons/react/24/outline"
+import { UserCircleIcon, MagnifyingGlassCircleIcon } from "@heroicons/react/24/outline"
 
 export default function Navbar() {
   const pathname = usePathname()
@@ -42,7 +42,15 @@ export default function Navbar() {
       <Link href="/shift" className={` ${pathname.includes("/shift") ? "text-black font-semibold " : ""}`}>
         Shift
       </Link>
-      |{isLoading && <div className="bg-black rounded-md text-white text-sm px-2 py-1">checking user...</div>}
+      |
+      {isLoading && (
+        <div>
+          <MagnifyingGlassCircleIcon
+            className="w-8 h-8 animate-pulse text-neutral-400 "
+            title="Checking user"
+          />
+        </div>
+      )}
       {!isLoading && user && (
         <>
           <Link
