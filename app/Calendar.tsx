@@ -57,20 +57,21 @@ export default function Calendar({ calendarRef, events, handleEventClick, handle
       selectable={true}
       dateClick={handleDateClick}
       eventContent={function (arg) {
-        if (arg.event.extendedProps.incharge) {
-          return (
-            <div className="relative fc-event-title-container overflow-hidden">
-              <div className="absolute -top-4 -left-2 text-3xl">🏅</div>
-              <div className="fc-event-title fc-sticky">{arg.event.title}</div>
-            </div>
-          )
-        } else {
-          return (
-            <div className="fc-event-title-container">
-              <div className="fc-event-title fc-sticky">{arg.event.title}</div>
-            </div>
-          )
+        let decorates = []
+
+        if (arg.event.extendedProps.note) {
+          decorates.push("📝")
         }
+        if (arg.event.extendedProps.incharge) {
+          decorates.push("🏅")
+        }
+
+        return (
+          <div className="relative fc-event-title-container overflow-hidden">
+            <div className="absolute -top-4 -left-2 text-3xl">{decorates}</div>
+            <div className="fc-event-title fc-sticky">{arg.event.title}</div>
+          </div>
+        )
       }}
     />
   )

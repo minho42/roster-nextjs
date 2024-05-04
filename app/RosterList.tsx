@@ -124,6 +124,7 @@ export default function RosterList() {
           color: getColorForTitle(title),
           id: doc.id, // "id" to be used for fullcalendar event
           incharge: doc.data().incharge,
+          note: doc.data().note,
         }
       })
     )
@@ -136,15 +137,19 @@ export default function RosterList() {
   function keyboardShortcuts(e: KeyboardEvent) {
     const calApi = calendarRef.current.getApi()
 
-    if (e.key === "Escape") {
-      // esc: close popup
-      handlePopupClose()
-    } else if (e.key === "p" || e.key === "P") {
-      calApi.prev()
-    } else if (e.key === "n" || e.key === "N") {
-      calApi.next()
-    } else if (e.key === "t" || e.key === "T") {
-      calApi.today()
+    if (isPopupVisible) {
+      if (e.key === "Escape") {
+        // esc: close popup
+        handlePopupClose()
+      }
+    } else {
+      if (e.key === "p" || e.key === "P") {
+        calApi.prev()
+      } else if (e.key === "n" || e.key === "N") {
+        calApi.next()
+      } else if (e.key === "t" || e.key === "T") {
+        calApi.today()
+      }
     }
   }
 
@@ -158,12 +163,12 @@ export default function RosterList() {
   }
 
   useEffect(() => {
-    document.addEventListener("keydown", keyboardShortcuts)
-
-    return () => {
-      document.removeEventListener("keydown", keyboardShortcuts)
-    }
-  }, [])
+    if (!selectedEvent) return
+    const note = selectedEvent?.extendedProps?.note
+    if (!note) return
+    textRef.current.value = note
+    setNote(note)
+  }, [selectedEvent])
 
   useEffect(() => {
     getRosterList()
@@ -178,7 +183,7 @@ export default function RosterList() {
     return () => {
       document.removeEventListener("keydown", keyboardShortcuts)
     }
-  }, [calendarRef.current])
+  }, [calendarRef.current, isPopupVisible])
 
   useEffect(() => {
     if (!isEditMode) {
@@ -248,8 +253,19 @@ export default function RosterList() {
   }
 
   async function handleTextSave() {
-    if (!textRef.current.value) return
-    handlePopupClose()
+    const note = textRef.current.value
+
+    try {
+      const docRef = doc(db, `roster/${user.uid}/shift/${selectedEvent.id}`)
+      await updateDoc(docRef, {
+        note: note,
+      })
+    } catch (error) {
+      console.log(error)
+    }
+
+    setRefetchToggle(!refetchTogle)
+    setIsPopupVisible(false)
   }
 
   async function handleIncharge(e: ChangeEvent<HTMLInputElement>) {
@@ -320,11 +336,11 @@ export default function RosterList() {
       ></div>
       <div
         ref={popupRef}
-        className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
-        border border-neutral-400 rounded-xl z-50 ${isPopupVisible ? "inline-block" : "hidden"}`}
+        className={`absolute top-1/4 left-1/2 transform -translate-x-1/2 
+        border bg-white border-neutral-400 rounded-xl z-50 ${isPopupVisible ? "inline-block" : "hidden"}`}
       >
         <div
-          className="z-10 w-56 rounded-xl text-center bg-white shadow-lg overflow-hidden px-2 py-2"
+          className="z-10 w-56 rounded-xl text-center bg-white shadow-2xl overflow-hidden px-2 py-2"
           tabIndex={-1}
         >
           <div className="flex items-center justify-between px-2 pb-2">
@@ -348,7 +364,7 @@ export default function RosterList() {
               className="rounded size-4"
               style={{ backgroundColor: getColorForTitle(selectedEvent?.title) }}
             ></div>
-            <div className="text-xl">{popupHeading}</div>
+            <div className="font-semibold">{popupHeading}</div>
           </div>
           <div className="space-y-2 py-2">
             <div className="">🏅 In-charge</div>
@@ -397,9 +413,10 @@ export default function RosterList() {
               rows={2}
             ></textarea>
             <button
-              className={`${
-                note.length > 0 ? "btn-blue border-transparent " : "btn-disabled"
-              } w-full border border-neutral-300`}
+              // className={`${
+              //   note.length > 0 ? "btn-blue border-transparent " : "btn-disabled"
+              // } w-full border border-neutral-300`}
+              className="btn-blue w-full "
               onClick={handleTextSave}
             >
               Save
