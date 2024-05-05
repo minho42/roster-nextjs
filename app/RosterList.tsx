@@ -402,7 +402,7 @@ export default function RosterList() {
             </div>
           </div>
           <hr />
-          <div className="space-y-2 p-2 text-sm">
+          <div className="space-y-2 p-2">
             <div className="">Note</div>
             <textarea
               ref={textRef}
