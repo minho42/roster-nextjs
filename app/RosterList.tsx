@@ -253,6 +253,7 @@ export default function RosterList() {
   }
 
   async function handleTextSave() {
+    console.log("handleTextSave")
     const note = textRef.current.value
 
     try {
@@ -266,6 +267,13 @@ export default function RosterList() {
 
     setRefetchToggle(!refetchTogle)
     setIsPopupVisible(false)
+  }
+
+  async function handleTextDelete() {
+    console.log("handleTextDelete")
+    textRef.current.value = ""
+    setNote("")
+    await handleTextSave()
   }
 
   async function handleIncharge(e: ChangeEvent<HTMLInputElement>) {
@@ -412,15 +420,20 @@ export default function RosterList() {
               id="note"
               rows={2}
             ></textarea>
-            <button
-              // className={`${
-              //   note.length > 0 ? "btn-blue border-transparent " : "btn-disabled"
-              // } w-full border border-neutral-300`}
-              className="btn-blue w-full "
-              onClick={handleTextSave}
-            >
-              Save
-            </button>
+            <div className="flex items-center justify-between gap-2">
+              <button
+                // className={`${
+                //   note.length > 0 ? "btn-blue border-transparent " : "btn-disabled"
+                // } w-full border border-neutral-300`}
+                className="btn-blue"
+                onClick={handleTextSave}
+              >
+                Save note
+              </button>
+              <button className={`${note ? "btn-red" : "btn-disabled"} `} onClick={handleTextDelete}>
+                Delete note
+              </button>
+            </div>
           </div>
         </div>
       </div>
