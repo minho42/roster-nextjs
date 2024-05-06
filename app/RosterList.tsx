@@ -21,7 +21,7 @@ import {
   updateDoc,
 } from "firebase/firestore"
 import { ShiftList, Shift } from "./components/ShiftList"
-import { PlusIcon, XMarkIcon, EllipsisVerticalIcon, TrashIcon } from "@heroicons/react/24/outline"
+import { PlusIcon, XMarkIcon, EllipsisVerticalIcon, TrashIcon, PencilIcon } from "@heroicons/react/24/outline"
 import { DateClickArg } from "@fullcalendar/interaction"
 
 import Calendar from "./Calendar"
@@ -410,7 +410,7 @@ export default function RosterList() {
             </div>
           </div>
           <hr />
-          <div className="space-y-2 p-2">
+          <div className="bg-neutral-100 rounded-lg space-y-2 p-2 my-2">
             <div className="">Note</div>
             <textarea
               ref={textRef}
@@ -420,18 +420,20 @@ export default function RosterList() {
               id="note"
               rows={2}
             ></textarea>
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center justify-between gap-3">
               <button
-                // className={`${
-                //   note.length > 0 ? "btn-blue border-transparent " : "btn-disabled"
-                // } w-full border border-neutral-300`}
-                className="btn-blue"
+                className={`${note ? "btn-blue" : "btn-disabled"} flex-grow`}
                 onClick={handleTextSave}
+                disabled={!note}
               >
-                Save note
+                <PencilIcon className="size-5" />
               </button>
-              <button className={`${note ? "btn-red" : "btn-disabled"} `} onClick={handleTextDelete}>
-                Delete note
+              <button
+                className={`${note ? "btn-gray" : "btn-disabled"} `}
+                onClick={handleTextDelete}
+                disabled={!note}
+              >
+                <TrashIcon className="size-5" />
               </button>
             </div>
           </div>
