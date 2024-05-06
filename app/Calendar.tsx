@@ -75,7 +75,7 @@ function Incharge() {
 
 function Note({ text }: { text: string }) {
   return (
-    <div className="absolute -bottom-[11px] left-0 text-[11px] text-white font-mono text-nowrap font-semibold">
+    <div className="absolute -bottom-[11px] left-0 text-[11px] text-white text-nowrap font-semibold">
       {text}
     </div>
   )

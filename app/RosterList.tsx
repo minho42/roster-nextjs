@@ -21,7 +21,13 @@ import {
   updateDoc,
 } from "firebase/firestore"
 import { ShiftList, Shift } from "./components/ShiftList"
-import { PlusIcon, XMarkIcon, EllipsisVerticalIcon, TrashIcon, PencilIcon } from "@heroicons/react/24/outline"
+import {
+  PlusIcon,
+  XMarkIcon,
+  EllipsisVerticalIcon,
+  TrashIcon,
+  PencilSquareIcon,
+} from "@heroicons/react/24/outline"
 import { DateClickArg } from "@fullcalendar/interaction"
 
 import Calendar from "./Calendar"
@@ -422,18 +428,18 @@ export default function RosterList() {
             ></textarea>
             <div className="flex items-center justify-between gap-3">
               <button
-                className={`${note ? "btn-blue" : "btn-disabled"} flex-grow`}
+                className={`${note ? "btn-black" : "btn-disabled"} flex-grow`}
                 onClick={handleTextSave}
                 disabled={!note}
               >
-                <PencilIcon className="size-5" />
+                Save
               </button>
               <button
                 className={`${note ? "btn-gray" : "btn-disabled"} `}
                 onClick={handleTextDelete}
                 disabled={!note}
               >
-                <TrashIcon className="size-5" />
+                Delete
               </button>
             </div>
           </div>
