@@ -229,7 +229,8 @@ export default function RosterList() {
     setSelectedEvent(info.event)
     setIsPopupVisible(true)
     console.log("eventClick", info.event.title)
-    const startStr = info.event.start.toLocaleDateString("en-CA", {
+    // en-CA
+    const startStr = info.event.start.toLocaleDateString("en-AU", {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
@@ -326,7 +327,7 @@ export default function RosterList() {
         {user && (
           <button
             onClick={() => setIsEditMode(!isEditMode)}
-            className={`absolute top-1 right-1 !rounded-full size-12 text-3xl ${
+            className={`absolute top-1 right-1 !rounded-full size-12 text-3xl shadow-xl ${
               isEditMode ? "btn-red" : "btn-blue"
             }`}
           >
