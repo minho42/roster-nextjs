@@ -271,7 +271,7 @@ export default function RosterList() {
     } catch (error) {
       console.log(error)
     }
-
+    setNote("")
     setRefetchToggle(!refetchTogle)
     setIsPopupVisible(false)
   }
