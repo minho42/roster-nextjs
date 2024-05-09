@@ -424,7 +424,7 @@ export default function RosterList() {
             <div className="">Note</div>
             <textarea
               ref={textRef}
-              className="w-full border border-neutral-300 p-1"
+              className="w-full border border-neutral-300 p-1 text-base"
               onChange={handleTextChange}
               name="note"
               id="note"
