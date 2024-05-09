@@ -247,7 +247,6 @@ export default function RosterList() {
     const docRef = doc(db, `roster/${user.uid}/shift/${selectedEvent.id}`)
     await deleteDoc(docRef)
     setRefetchToggle(!refetchTogle)
-
     setIsPopupVisible(false)
   }
 
@@ -271,6 +270,7 @@ export default function RosterList() {
     } catch (error) {
       console.log(error)
     }
+    textRef.current.value = ""
     setNote("")
     setRefetchToggle(!refetchTogle)
     setIsPopupVisible(false)
