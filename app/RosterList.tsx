@@ -355,7 +355,7 @@ export default function RosterList() {
         border bg-white border-neutral-400 rounded-xl z-50 ${isPopupVisible ? "inline-block" : "hidden"}`}
       >
         <div
-          className="z-10 w-56 rounded-xl text-center bg-white shadow-2xl overflow-hidden px-2 py-2"
+          className="z-10 w-64 rounded-xl text-center bg-white shadow-2xl overflow-hidden px-2 py-2"
           tabIndex={-1}
         >
           <div className="flex items-center justify-between px-2 pb-2">
@@ -381,10 +381,13 @@ export default function RosterList() {
             ></div>
             <div className="font-semibold">{popupHeading}</div>
           </div>
-          <div className="space-y-2 py-2">
-            <div className="">🏅 In-charge</div>
 
-            <div className="flex items-center justify-evenly gap-6">
+          <hr />
+
+          <div className="space-y-2 py-2">
+            <div className="">In-charge</div>
+
+            <div className="flex items-center justify-center gap-8">
               <div className="flex flex-col">
                 <label htmlFor="yesRadio">
                   <input
