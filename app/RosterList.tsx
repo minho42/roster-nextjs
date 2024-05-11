@@ -420,15 +420,15 @@ export default function RosterList() {
             </div>
           </div>
           <hr />
-          <div className="bg-neutral-100 rounded-lg space-y-2 p-2 my-2">
-            <div className="">Note</div>
+          <div className="bg-neutral-100 rounded-lg space-y-1 p-2 my-2">
             <textarea
               ref={textRef}
+              placeholder="Add a note"
               className="w-full border border-neutral-300 p-1 text-base"
               onChange={handleTextChange}
               name="note"
               id="note"
-              rows={2}
+              rows={4}
             ></textarea>
             <div className="flex items-center justify-between gap-3">
               <button
@@ -436,7 +436,7 @@ export default function RosterList() {
                 onClick={handleTextSave}
                 disabled={!note}
               >
-                Save
+                Save note
               </button>
               <button
                 className={`${note ? "btn-gray" : "btn-disabled"} `}
